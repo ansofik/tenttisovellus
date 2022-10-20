@@ -53,15 +53,6 @@ function reducer(state, action) {
         save: true
       };
 
-    case 'DELETE_QUESTION':
-      return {
-        ...state,
-        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
-          ...exam, questions: exam.questions.filter((question, i) => i != action.payload.questionIndex)
-        } : exam)),
-        save: true
-      };
-
     case 'ANSWER_CHANGED':
       return {
         ...state,
@@ -72,6 +63,26 @@ function reducer(state, action) {
         } : exam)),
         save: true
       };
+
+    case 'DELETE_QUESTION':
+      return {
+        ...state,
+        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
+          ...exam, questions: exam.questions.filter((question, i) => i != action.payload.questionIndex)
+        } : exam)),
+        save: true
+      };
+
+    case 'ADD_QUESTION': {
+      const newQuestion = { question: "q", answers: ["a", "a"], indexOfCorrectAns: 0 };
+      return {
+        ...state,
+        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
+          ...exam, questions: [...exam.questions.slice(0, action.payload.questionIndex + 1), newQuestion, ...exam.questions.slice(action.payload.questionIndex + 1)]
+        } : exam)),
+        save: true
+      };
+    }
 
     case 'INIT_DATA':
       return { ...action.payload, initialized: true };

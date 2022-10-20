@@ -32,6 +32,15 @@ const Question = (props) => {
           }
         })
       }}>poista kysymys</button>
+      <button type="button" onClick={(event) => {
+        props.dispatch({
+          type: 'ADD_QUESTION',
+          payload: {
+            examIndex: props.examIndex,
+            questionIndex: props.questionIndex
+          }
+        })
+      }}>lisää kysymys</button>
     </div>
   );
 }
