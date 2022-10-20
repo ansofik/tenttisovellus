@@ -1,82 +1,83 @@
 import './App.css';
 import Header from './Header';
-import Tentti from './Tentti';
+import Exam from './Exam';
 import { useState, useReducer, useEffect } from 'react';
 
-let kysymys1 = {
-  kysymys: "Paljonko on 1+2?",
-  vastausVaiht: [1, 3, 4],
-  oikeaIndex: 1
+let question1 = {
+  question: "Paljonko on 1+2?",
+  answers: [1, 3, 4],
+  indexOfCorrectAns: 1
 };
 
-let kysymys2 = {
-  kysymys: "Onko kuu juustoa?",
-  vastausVaiht: ["kyllä", "ei"],
-  oikeaIndex: 1
+let question2 = {
+  question: "Onko kuu juustoa?",
+  answers: ["kyllä", "ei"],
+  indexOfCorrectAns: 1
 };
 
-let tentti1 = {
-  nimi: "haskell perusteet",
-  kysymykset: [kysymys1, kysymys2],
+let exam1 = {
+  name: "haskell perusteet",
+  questions: [question1, question2],
 };
 
-let tentti2 = {
-  nimi: "javascript perusteet",
-  kysymykset: [kysymys1],
+let exam2 = {
+  name: "javascript perusteet",
+  questions: [question1],
 };
 
+// define initial data, save indicates whether data needs to be resaved to localStorage
 const dataInit = {
-  tentit: [tentti1, tentti2],
-  tallennetaan: false,
-  alustettu: false
+  exams: [exam1, exam2],
+  save: false,
+  initialized: false
 }
 
 function reducer(state, action) {
   switch (action.type) {
 
-    case 'TENTIN_NIMI_MUUTTUI':
+    case 'EXAM_NAME_CHANGED':
       return {
         ...state,
-        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? { ...tentti, nimi: action.payload.nimi } : tentti)),
-        tallennetaan: true
+        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? { ...exam, name: action.payload.name } : exam)),
+        save: true
       };
 
-    case 'KYSYMYS_MUUTTUI':
+    case 'QUESTION_CHANGED':
       return {
         ...state,
-        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? {
-          ...tentti, kysymykset: tentti.kysymykset.map((kysymys, i) => (i === action.payload.kysymyksenIndex ? {
-            ...kysymys, kysymys: action.payload.kysymys
-          } : kysymys))
-        } : tentti)),
-        tallennetaan: true
+        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
+          ...exam, questions: exam.questions.map((question, i) => (i === action.payload.questionIndex ? {
+            ...question, question: action.payload.question
+          } : question))
+        } : exam)),
+        save: true
       };
 
-    case 'POISTA_KYSYMYS':
+    case 'DELETE_QUESTION':
       return {
         ...state,
-        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? {
-          ...tentti, kysymykset: tentti.kysymykset.filter((kysymys, j) => j != action.payload.kysymyksenIndex)
-        } : tentti)),
-        tallennetaan: true
+        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
+          ...exam, questions: exam.questions.filter((question, i) => i != action.payload.questionIndex)
+        } : exam)),
+        save: true
       };
 
-    case 'VASTAUS_MUUTTUI':
+    case 'ANSWER_CHANGED':
       return {
         ...state,
-        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? {
-          ...tentti, kysymykset: tentti.kysymykset.map((kysymys, i) => (i === action.payload.kysymyksenIndex ? {
-            ...kysymys, vastausVaiht: kysymys.vastausVaiht.map((vastaus, i) => (i === action.payload.vastauksenIndex ? action.payload.vastaus : vastaus))
-          } : kysymys))
-        } : tentti)),
-        tallennetaan: true
+        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
+          ...exam, questions: exam.questions.map((question, i) => (i === action.payload.questionIndex ? {
+            ...question, answers: question.answers.map((answer, i) => (i === action.payload.answerIndex ? action.payload.answer : answer))
+          } : question))
+        } : exam)),
+        save: true
       };
 
-    case 'ALUSTA_DATA':
-      return { ...action.payload, alustettu: true };
+    case 'INIT_DATA':
+      return { ...action.payload, initialized: true };
 
-    case 'PAIVITA_TALLENNUSTILA':
-      return { ...state, tallennetaan: false };
+    case 'UPDATE_STORAGE':
+      return { ...state, save: false };
 
     default:
       throw new Error();
@@ -86,28 +87,25 @@ function reducer(state, action) {
 const App = () => {
 
   const [data, dispatch] = useReducer(reducer, dataInit);
-  const [valittu, setValittu] = useState(0)
 
+  // save initial data to or load existing data from local storage
   useEffect(() => {
-    let tenttidata = localStorage.getItem('tenttidata');
-    if (tenttidata == null) {
-      console.log("ladataan data local storageen")
-      localStorage.setItem('tenttidata', JSON.stringify(dataInit))
-      dispatch({ type: 'ALUSTA_DATA', payload: dataInit })
-
+    let examData = localStorage.getItem('examData');
+    if (examData == null) {
+      localStorage.setItem('examData', JSON.stringify(dataInit))
+      dispatch({ type: 'INIT_DATA', payload: dataInit })
     } else {
-      console.log("ladataan data local storagesta")
-      dispatch({ type: 'ALUSTA_DATA', payload: (JSON.parse(tenttidata)) })
+      dispatch({ type: 'INIT_DATA', payload: (JSON.parse(examData)) })
     }
   }, []);
 
+  // update local storage if data has changed
   useEffect(() => {
-    if (data.tallennetaan == true) {
-      console.log("talletetaan local storageen muutos")
-      localStorage.setItem('tenttidata', JSON.stringify(data))
-      dispatch({ type: 'PAIVITA_TALLENNUSTILA', payload: false })
+    if (data.save == true) {
+      localStorage.setItem('examData', JSON.stringify(data))
+      dispatch({ type: 'UPDATE_STORAGE', payload: false })
     }
-  }, [data.tallennetaan]);
+  }, [data.save]);
 
   return (
     <div>
@@ -115,10 +113,10 @@ const App = () => {
       <div className="center">
         <nav>
           <ul className="testMenu">
-            {data.alustettu && data.tentit.map(tentti => <li><a href="">{tentti.nimi}</a></li>)}
+            {data.initialized && data.exams.map(exam => <li><a href="">{exam.name}</a></li>)}
           </ul>
         </nav>
-        {data.alustettu && <Tentti tentti={data.tentit[0]} tentinIndex='0' dispatch={dispatch} />}
+        {data.initialized && <Exam exam={data.exams[0]} examIndex='0' dispatch={dispatch} />}
         <nav>
           <a href="" className="showAns">Näytä vastaukset</a>
         </nav>
@@ -128,5 +126,5 @@ const App = () => {
 }
 
 export default App;
-  
+
 
