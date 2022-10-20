@@ -1,7 +1,7 @@
 import './App.css';
 import Header from './Header';
 import Tentti from './Tentti';
-import { useState, useReducer } from 'react';
+import { useState, useReducer, useEffect } from 'react';
 
 let kysymys1 = {
   kysymys: "Paljonko on 1+2?",
@@ -17,93 +17,66 @@ let kysymys2 = {
 
 let tentti1 = {
   nimi: "haskell perusteet",
-  kysymykset: [kysymys1, kysymys2]
+  kysymykset: [kysymys1, kysymys2],
 };
 
 let tentti2 = {
   nimi: "javascript perusteet",
-  kysymykset: [kysymys1]
+  kysymykset: [kysymys1],
 };
 
-const tenttiLista = [tentti1, tentti2];
+const dataInit = {
+  tentit: [tentti1, tentti2],
+  tallennetaan: false,
+  alustettu: false
+}
 
 function reducer(state, action) {
-
-  /* const tentinIndex = action.payload.tentinIndex;
-  const tentitKopio = [...state]; */
-
   switch (action.type) {
-    case 'TENTIN_NIMI_MUUTTUI': {
-      /* tentitKopio[tentinIndex].nimi = action.payload.nimi;
-      return tentitKopio; */
 
-      // muuttamatta tilaa suoraan:
-      /* const tenttiKopio = {...tentitKopio[tentinIndex]};
-      tenttiKopio.nimi = action.payload.nimi;
-      tentitKopio[tentinIndex] = tenttiKopio;
-      return tentitKopio; */
+    case 'TENTIN_NIMI_MUUTTUI':
+      return {
+        ...state,
+        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? { ...tentti, nimi: action.payload.nimi } : tentti)),
+        tallennetaan: true
+      };
 
-      // lyhyemmin:
-      return state.map((tentti, i) => (i == action.payload.tentinIndex ? { ...tentti, nimi: action.payload.nimi } : tentti));
+    case 'KYSYMYS_MUUTTUI':
+      return {
+        ...state,
+        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? {
+          ...tentti, kysymykset: tentti.kysymykset.map((kysymys, i) => (i === action.payload.kysymyksenIndex ? {
+            ...kysymys, kysymys: action.payload.kysymys
+          } : kysymys))
+        } : tentti)),
+        tallennetaan: true
+      };
 
-    }
-
-    case 'KYSYMYS_MUUTTUI': {
-      /* tentitKopio[tentinIndex].kysymykset[action.payload.kysymyksenIndex].kysymys = action.payload.kysymys;
-      return tentitKopio; */
-
-      /* const kysymyksenIndex = action.payload.kysymyksenIndex;
-      const tenttiKopio = { ...tentitKopio[tentinIndex] };
-      const kysymyksetKopio = [...tenttiKopio.kysymykset];
-      const kysymysKopio = { ...kysymyksetKopio[kysymyksenIndex] };
-      kysymysKopio.kysymys = action.payload.kysymys;
-
-      kysymyksetKopio[kysymyksenIndex] = kysymysKopio;
-      tenttiKopio.kysymykset = kysymyksetKopio;
-      tentitKopio[tentinIndex] = tenttiKopio;
-      return tentitKopio; */
-
-      return state.map((tentti, i) => (
-        i == action.payload.tentinIndex ? {
-          ...tentti, kysymykset: tentti.kysymykset.map((kysymys, i) => (
-            i === action.payload.kysymyksenIndex ? { ...kysymys, kysymys: action.payload.kysymys } : kysymys))
-        } : tentti));
-    }
-
-    case 'POISTA_KYSYMYS': {
-      /* const tenttiKopio = { ...tentitKopio[action.payload.tentinIndex] };
-      const kysymyksetKopio = [...tenttiKopio.kysymykset];
-      kysymyksetKopio.splice(action.payload.kysymyksenIndex, 1);
-      tenttiKopio.kysymykset = kysymyksetKopio;
-      tentitKopio[tentinIndex] = tenttiKopio;
-      return tentitKopio; */
-
-      return state.map((tentti, i) => (
-        i == action.payload.tentinIndex ? {
+    case 'POISTA_KYSYMYS':
+      return {
+        ...state,
+        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? {
           ...tentti, kysymykset: tentti.kysymykset.filter((kysymys, j) => j != action.payload.kysymyksenIndex)
-        } : tentti));
-    }
+        } : tentti)),
+        tallennetaan: true
+      };
 
-    case 'VASTAUS_MUUTTUI': {
-      /* tentitKopio[tentinIndex].kysymykset[action.payload.kysymyksenIndex].vastausVaiht[action.payload.vastauksenIndex] = action.payload.vastaus;
-      return tentitKopio; */
-      const tentitKopio = [...state];
-      const tentinIndex = action.payload.tentinIndex;
-      const kysymyksenIndex = action.payload.kysymyksenIndex;
-      const vastauksenIndex = action.payload.vastauksenIndex;
-      const tenttiKopio = { ...tentitKopio[tentinIndex] };
-      const kysymyksetKopio = [...tenttiKopio.kysymykset];
-      const kysymysKopio = { ...kysymyksetKopio[kysymyksenIndex] };
-      const vastausVaihtKopio = [...kysymysKopio.vastausVaiht];
-      vastausVaihtKopio[vastauksenIndex] = action.payload.vastaus;
+    case 'VASTAUS_MUUTTUI':
+      return {
+        ...state,
+        tentit: state.tentit.map((tentti, i) => (i == action.payload.tentinIndex ? {
+          ...tentti, kysymykset: tentti.kysymykset.map((kysymys, i) => (i === action.payload.kysymyksenIndex ? {
+            ...kysymys, vastausVaiht: kysymys.vastausVaiht.map((vastaus, i) => (i === action.payload.vastauksenIndex ? action.payload.vastaus : vastaus))
+          } : kysymys))
+        } : tentti)),
+        tallennetaan: true
+      };
 
-      kysymysKopio.vastausVaiht = vastausVaihtKopio;
-      kysymyksetKopio[kysymyksenIndex] = kysymysKopio;
-      tenttiKopio.kysymykset = kysymyksetKopio;
-      tentitKopio[tentinIndex] = tenttiKopio;
+    case 'ALUSTA_DATA':
+      return { ...action.payload, alustettu: true };
 
-      return tentitKopio;
-    }
+    case 'PAIVITA_TALLENNUSTILA':
+      return { ...state, tallennetaan: false };
 
     default:
       throw new Error();
@@ -112,7 +85,29 @@ function reducer(state, action) {
 
 const App = () => {
 
-  const [tentit, dispatch] = useReducer(reducer, tenttiLista);
+  const [data, dispatch] = useReducer(reducer, dataInit);
+  const [valittu, setValittu] = useState(0)
+
+  useEffect(() => {
+    let tenttidata = localStorage.getItem('tenttidata');
+    if (tenttidata == null) {
+      console.log("ladataan data local storageen")
+      localStorage.setItem('tenttidata', JSON.stringify(dataInit))
+      dispatch({ type: 'ALUSTA_DATA', payload: dataInit })
+
+    } else {
+      console.log("ladataan data local storagesta")
+      dispatch({ type: 'ALUSTA_DATA', payload: (JSON.parse(tenttidata)) })
+    }
+  }, []);
+
+  useEffect(() => {
+    if (data.tallennetaan == true) {
+      console.log("talletetaan local storageen muutos")
+      localStorage.setItem('tenttidata', JSON.stringify(data))
+      dispatch({ type: 'PAIVITA_TALLENNUSTILA', payload: false })
+    }
+  }, [data.tallennetaan]);
 
   return (
     <div>
@@ -120,10 +115,10 @@ const App = () => {
       <div className="center">
         <nav>
           <ul className="testMenu">
-            {tentit.map(tentti => <li><a href="">{tentti.nimi}</a></li>)}
+            {data.alustettu && data.tentit.map(tentti => <li><a href="">{tentti.nimi}</a></li>)}
           </ul>
         </nav>
-        <Tentti tentti={tentit[0]} tentinIndex='0' dispatch={dispatch} />
+        {data.alustettu && <Tentti tentti={data.tentit[0]} tentinIndex='0' dispatch={dispatch} />}
         <nav>
           <a href="" className="showAns">Näytä vastaukset</a>
         </nav>
@@ -133,4 +128,5 @@ const App = () => {
 }
 
 export default App;
+  
 
