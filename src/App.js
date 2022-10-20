@@ -76,7 +76,7 @@ function reducer(state, action) {
     case 'INIT_DATA':
       return { ...action.payload, initialized: true };
 
-    case 'UPDATE_STORAGE':
+    case 'UPDATED_STORAGE':
       return { ...state, save: false };
 
     default:
@@ -87,25 +87,36 @@ function reducer(state, action) {
 const App = () => {
 
   const [data, dispatch] = useReducer(reducer, dataInit);
+  const [selectedExam, setSelectedExam] = useState({ index: 0, save: false });
 
   // save initial data to or load existing data from local storage
   useEffect(() => {
+    console.log("useeffect1")
     let examData = localStorage.getItem('examData');
+    let activeExam = localStorage.getItem('activeExam');
     if (examData == null) {
-      localStorage.setItem('examData', JSON.stringify(dataInit))
-      dispatch({ type: 'INIT_DATA', payload: dataInit })
+      localStorage.setItem('examData', JSON.stringify(dataInit));
+      dispatch({ type: 'INIT_DATA', payload: dataInit });
     } else {
       dispatch({ type: 'INIT_DATA', payload: (JSON.parse(examData)) })
+      if (activeExam != null) {
+        setSelectedExam(JSON.parse(activeExam))
+      }
     }
   }, []);
 
   // update local storage if data has changed
   useEffect(() => {
+    console.log("useeffect2")
     if (data.save == true) {
       localStorage.setItem('examData', JSON.stringify(data))
-      dispatch({ type: 'UPDATE_STORAGE', payload: false })
+      dispatch({ type: 'UPDATED_STORAGE', payload: false })
     }
-  }, [data.save]);
+    if (selectedExam.save == true) {
+      localStorage.setItem('activeExam', JSON.stringify(selectedExam))
+      setSelectedExam({ ...selectedExam, save: false })
+    }
+  }, [data.save, selectedExam.save]);
 
   return (
     <div>
@@ -113,10 +124,10 @@ const App = () => {
       <div className="center">
         <nav>
           <ul className="testMenu">
-            {data.initialized && data.exams.map(exam => <li><a href="">{exam.name}</a></li>)}
+            {data.initialized && data.exams.map((exam, i) => <li><button onClick={() => setSelectedExam({ index: i, save: true })}>{exam.name}</button></li>)}
           </ul>
         </nav>
-        {data.initialized && <Exam exam={data.exams[0]} examIndex='0' dispatch={dispatch} />}
+        {data.initialized && <Exam exam={data.exams[selectedExam.index]} examIndex={selectedExam.index} dispatch={dispatch} />}
         <nav>
           <a href="" className="showAns">Näytä vastaukset</a>
         </nav>
