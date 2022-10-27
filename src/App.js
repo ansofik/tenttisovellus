@@ -2,40 +2,13 @@ import './App.css';
 import Header from './Header';
 import Exam from './Exam';
 import { useState, useReducer, useEffect } from 'react';
-
-let question1 = {
-  question: "Paljonko on 1+2?",
-  answers: [1, 3, 4],
-  indexOfCorrectAns: 1
-};
-
-let question2 = {
-  question: "Onko kuu juustoa?",
-  answers: ["kyllä", "ei"],
-  indexOfCorrectAns: 1
-};
-
-let exam1 = {
-  name: "haskell perusteet",
-  questions: [question1, question2],
-};
-
-let exam2 = {
-  name: "javascript perusteet",
-  questions: [question1],
-};
-
-// define initial data, save indicates whether data needs to be resaved to localStorage
-const dataInit = {
-  exams: [exam1, exam2],
-  save: false,
-  initialized: false
-}
+import axios from 'axios'
 
 function reducer(state, action) {
   switch (action.type) {
 
     case 'EXAM_NAME_CHANGED':
+      console.log("changing exam name")
       return {
         ...state,
         exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? { ...exam, name: action.payload.name } : exam)),
@@ -85,7 +58,8 @@ function reducer(state, action) {
     }
 
     case 'INIT_DATA':
-      return { ...action.payload, initialized: true };
+      console.log("initializing data")
+      return { ...action.payload, initialized: true, save: false };
 
     case 'UPDATED_STORAGE':
       return { ...state, save: false };
@@ -97,37 +71,60 @@ function reducer(state, action) {
 
 const App = () => {
 
-  const [data, dispatch] = useReducer(reducer, dataInit);
+  const [examData, dispatch] = useReducer(reducer, { initialized: false });
+  // user login info hardcoded for testing of authorization to make post requests
+  const [loggedInUser, setLoggedInUser] = useState({ username: "user_admin", password: "password_admin" })
+  /* const [loggedInUser, setLoggedInUser] = useState({ username: "user0", password: "password0" }) */
+ 
   const [selectedExam, setSelectedExam] = useState({ index: 0, save: false });
 
-  // save initial data to or load existing data from local storage
+  // get initial data from the server
   useEffect(() => {
-    console.log("useeffect1")
-    let examData = localStorage.getItem('examData');
-    let activeExam = localStorage.getItem('activeExam');
-    if (examData == null) {
-      localStorage.setItem('examData', JSON.stringify(dataInit));
-      dispatch({ type: 'INIT_DATA', payload: dataInit });
-    } else {
-      dispatch({ type: 'INIT_DATA', payload: (JSON.parse(examData)) })
-      if (activeExam != null) {
-        setSelectedExam(JSON.parse(activeExam))
+    const getExamData = async () => {
+      try {
+        const response = await axios('http://localhost:8080');
+        console.log("response", response);
+        dispatch({ type: 'INIT_DATA', payload: response.data });
+      } catch (error) {
+        console.log("Error", error)
       }
     }
+    getExamData()
   }, []);
 
-  // update local storage if data has changed
+  // save updated exam data to the server
   useEffect(() => {
-    console.log("useeffect2")
-    if (data.save == true) {
-      localStorage.setItem('examData', JSON.stringify(data))
-      dispatch({ type: 'UPDATED_STORAGE', payload: false })
+    const saveExamData = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080', {
+          data: examData,
+          userdata: loggedInUser
+        })
+        console.log("response", response)
+        dispatch({ type: 'UPDATED_STORAGE' })
+      } catch (error) {
+        console.log("Error", error)
+      }
     }
-    if (selectedExam.save == true) {
-      localStorage.setItem('activeExam', JSON.stringify(selectedExam))
-      setSelectedExam({ ...selectedExam, save: false })
+    if (examData.save === true) {
+      saveExamData()
     }
-  }, [data.save, selectedExam.save]);
+  }, [examData.save, selectedExam.save]);
+
+
+  const [timer, setTimer] = useState(null)
+
+  useEffect(() => {
+    if (examData.save == true) {
+      if (timer !== null) {
+        console.log("before", timer)
+        clearTimeout(timer)
+        console.log("after", timer)
+      }
+      setTimer(setTimeout(() => alert("Muista tallentaa"), 600000))
+    }
+  }, [examData.save]);
+
 
   return (
     <div>
@@ -135,10 +132,10 @@ const App = () => {
       <div className="center">
         <nav>
           <ul className="testMenu">
-            {data.initialized && data.exams.map((exam, i) => <li><button onClick={() => setSelectedExam({ index: i, save: true })}>{exam.name}</button></li>)}
+            {examData.initialized && examData.exams.map((exam, i) => <li><button onClick={() => setSelectedExam({ index: i, save: true })}>{exam.name}</button></li>)}
           </ul>
         </nav>
-        {data.initialized && <Exam exam={data.exams[selectedExam.index]} examIndex={selectedExam.index} dispatch={dispatch} />}
+        {examData.initialized && <Exam exam={examData.exams[selectedExam.index]} examIndex={selectedExam.index} dispatch={dispatch} />}
         <nav>
           <a href="" className="showAns">Näytä vastaukset</a>
         </nav>
@@ -148,5 +145,3 @@ const App = () => {
 }
 
 export default App;
-
-
