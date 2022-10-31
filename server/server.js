@@ -2,8 +2,9 @@ const express = require('express')
 const fs = require('fs').promises;
 const cors = require('cors')
 const app = express()
+/* const https = require('https') */
 const port = 8080;
-
+  
 app.use(cors())
 app.use(express.json())
 
@@ -25,11 +26,12 @@ const checkUser = (req, res, next) => {
     console.log(req.body.userdata)
     const readUserData = async () => {
         try {
-            const response = JSON.parse(await fs.readFile('userdata.json', { encoding: 'utf8', flag: 'r' }))
-            console.log(response)
-            const match = response.filter(user => user.username === req.body.userdata.username)[0]
+            const users = JSON.parse(await fs.readFile('userdata.json', { encoding: 'utf8', flag: 'r' }))
+            console.log(users)
+            const match = users.filter(user => user.username === req.body.userdata.username
+                && user.password === req.body.userdata.password && user.isAdmin === true)
             console.log(match)
-            if (match.password == req.body.userdata.password && match.isAdmin === true) {
+            if (match.length === 1) {
                 next();
                 return;
             }
@@ -46,6 +48,7 @@ app.post('/', checkUser, (req, res) => {
     console.log(req.body)
     const writeData = async () => {
         try {
+            console.log("writing")
             await fs.writeFile('examdata.json', JSON.stringify(req.body.data))
             res.send("Data saved")
         } catch (error) {
