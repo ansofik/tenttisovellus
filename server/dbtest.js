@@ -12,7 +12,7 @@ const pool = new Pool({
 const lisaaTentti = async (nimi, pvm, voimassa) => {
   try {
     const query = {
-      text: 'INSERT INTO tentit (nimi, pvm, voimassa) VALUES ($1, $2, $3)',
+      text: 'INSERT INTO tentti (nimi, pvm, voimassa) VALUES ($1, $2, $3)',
       values: [nimi, pvm, voimassa]
     }
     const res = await pool.query(query)
@@ -28,7 +28,7 @@ const lisaaTentti = async (nimi, pvm, voimassa) => {
 // poista tentti id:n perusteella
 const poistaTentti = async (id) => {
   try {
-    const queryText = 'DELETE FROM tentit WHERE id = $1'
+    const queryText = 'DELETE FROM tentti WHERE id = $1'
     const res = await pool.query(queryText, [id])
     console.log(res.rowCount)
   } catch (err) {
@@ -43,7 +43,7 @@ const poistaTentti = async (id) => {
 const muutaTentinNimea = async (id, uusiNimi) => {
   try {
     const query = {
-      text: 'UPDATE tentit SET nimi = $1 WHERE id = $2',
+      text: 'UPDATE tentti SET nimi = $1 WHERE id = $2',
       values: [uusiNimi, id]
     }
     const res = await pool.query(query)
@@ -59,7 +59,7 @@ const muutaTentinNimea = async (id, uusiNimi) => {
 // hae kaikki tentit
 const haeTentit = async () => {
   try {
-    const res = await pool.query('SELECT * FROM tentit')
+    const res = await pool.query('SELECT * FROM tentti')
     console.log(res.rows)
   } catch (err) {
     console.log("virhe tenttien hakemisessa", err)
@@ -71,7 +71,7 @@ const haeTentit = async () => {
 // hae tentti id:n perusteella
 const haeTentti = async (id) => {
   try {
-    const queryText = 'SELECT * FROM tentit WHERE id = $1'
+    const queryText = 'SELECT * FROM tentti WHERE id = $1'
     const res = await pool.query(queryText, [id])
     console.log(res.rows)
   } catch (err) {
@@ -85,7 +85,7 @@ const haeTentti = async (id) => {
 // hae tentit nimen perusteella aakkosjärjestyksessä 
 const haeTentitAakkosj = async () => {
   try {
-    const res = await pool.query('SELECT * FROM tentit ORDER BY nimi')
+    const res = await pool.query('SELECT * FROM tentti ORDER BY nimi')
     console.log(res.rows)
   } catch (err) {
     console.log("virhe tenttien hakemisessa aakkosjärjestyksessä", err)
@@ -103,7 +103,7 @@ const haeTentitId = async (idList) => {
       str += ' $' + i + ','
     }
     str = str.trim().slice(0, -1)
-    const queryText = 'SELECT * FROM tentit WHERE id IN (' + str + ')'
+    const queryText = 'SELECT * FROM tentti WHERE id IN (' + str + ')'
     console.log(queryText)
     const res = await pool.query(queryText, idList)
     console.log(res.rows)
@@ -118,7 +118,7 @@ const haeTentitId = async (idList) => {
 // Hae tentit, joiden päivämäärä on ennen annettua päivämäärää
 const haeTentitEnnenPvm = async (pvm) => {
   try {
-     const queryText = 'SELECT * FROM tentit WHERE pvm < $1'
+     const queryText = 'SELECT * FROM tentti WHERE pvm < $1'
      const res = await pool.query(queryText, [pvm])
      console.log(res.rows)
   } catch (err) {
@@ -132,7 +132,7 @@ const haeTentitEnnenPvm = async (pvm) => {
 // Hae tentit, jotka ovat voimassa 
 const haeTentitVoimassa = async () => {
   try {
-    const queryText = 'SELECT * FROM tentit WHERE voimassa = true'
+    const queryText = 'SELECT * FROM tentti WHERE voimassa = true'
     const res = await pool.query(queryText)
     console.log(res.rows)
   } catch (err) {
@@ -140,4 +140,4 @@ const haeTentitVoimassa = async () => {
   }
 }
 
-//haeTentitVoimassa()
+haeTentitVoimassa()
