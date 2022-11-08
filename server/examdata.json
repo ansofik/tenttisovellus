@@ -1,1 +1,0 @@
-{"exams":[{"name":"haskell perusteet","questions":[{"question":"Paljonko on 1+2?","answers":["m","3","4"],"indexOfCorrectAns":1},{"question":"Onko kuu juustoa?","answers":["kyllä","ei"],"indexOfCorrectAns":1}]},{"name":"javascript perusteet","questions":[{"question":"Paljonko on 1+2?","answers":["1","3","4"],"indexOfCorrectAns":1}]}],"save":true,"initialized":true}
