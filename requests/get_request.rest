@@ -11,3 +11,7 @@ GET http://localhost:8080/exams/1/questions
 ###
 
 GET http://localhost:8080/exams/1/questions/2/answeroptions
+
+###
+
+GET http://localhost:8080/takenexams?exam=1&account=1
