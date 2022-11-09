@@ -1,0 +1,6 @@
+
+DELETE http://localhost:8080/exams/3
+
+###
+
+DELETE http://localhost:8080/takenexams/5

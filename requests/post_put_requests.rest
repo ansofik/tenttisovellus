@@ -1,0 +1,88 @@
+
+POST http://localhost:8080/exams/
+content-type: application/json
+
+{
+    "name": "C perusteet",
+    "published": "true"
+}
+
+###
+
+PUT http://localhost:8080/exams/2
+content-type: application/json
+
+{
+    "name": "Tietokantojen perusteet",
+    "published": "true"
+}
+
+###
+
+POST http://localhost:8080/exams/1/questions
+content-type: application/json
+
+{
+    "text": "Miten kirjoitetaan monen rivin kommentti?"
+}
+
+###
+
+PUT http://localhost:8080/exams/1/questions/3
+content-type: application/json
+
+{
+    "text": "Miten kirjoitetaan monen rivin kommentti?"
+}
+
+###
+
+POST http://localhost:8080/exams/1/questions/3/answeroptions
+content-type: application/json
+
+{
+    "text": " /* kommentti */ ",
+    "correct": "true"
+}
+
+###
+
+PUT http://localhost:8080/exams/1/questions/3/answeroptions/7
+content-type: application/json
+
+{
+    "text": " /// kommentti /// ",
+    "correct": "false"
+}
+
+###
+
+POST http://localhost:8080/takenexams
+Content-Type: application/json
+
+{
+    "examId": 1,
+    "accountId": 2
+}
+
+###
+
+PUT http://localhost:8080/takenexams/6
+Content-Type: application/json
+
+{
+    "points": 100
+}
+
+###
+
+POST http://localhost:8080/takenexams/2/answers
+Content-Type: application/json
+
+{
+    "answerOptionId": 4
+}
+
+
+
+
