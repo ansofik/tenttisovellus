@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express()
 const port = 8080
 const examsRouter = require('./controllers/exams')
-const takenExamsRouter = require('./controllers/takenExam')
+const takenExamsRouter = require('./controllers/takenExams')
 
 app.use(cors())
 app.use(express.json())

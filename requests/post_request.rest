@@ -28,7 +28,13 @@ content-type: application/json
 
 ###
 
-DELETE http://localhost:8080/exams/3
+POST http://localhost:8080/takenexams
+Content-Type: application/json
+
+{
+    "exam_id": 1,
+    "account_id": 2
+}
 
 ###
 
@@ -58,3 +64,23 @@ content-type: application/json
     "text": " /// kommentti /// ",
     "correct": "false"
 }
+
+###
+
+PUT http://localhost:8080/takenexams/5
+Content-Type: application/json
+
+{
+    "points": 100
+}
+
+
+###
+
+DELETE http://localhost:8080/exams/3
+
+
+###
+
+DELETE http://localhost:8080/takenexams/5
+Content-Type: application/json

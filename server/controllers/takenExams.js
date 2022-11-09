@@ -1,0 +1,63 @@
+const pool = require('../db.js')
+const express = require('express')
+const takenExamsRouter = express.Router()
+
+takenExamsRouter.get('/', async (req, res) => {
+    console.log("received get request for taken exams")
+    try {
+        const result = await pool.query('SELECT * FROM taken_exam')
+        res.send(result.rows)
+    } catch (err) {
+        console.log(err)
+        res.status(404).end()
+    }
+})
+
+takenExamsRouter.get('/:takenExamId', async (req, res) => {
+    console.log("received get request for taken exam by id")
+    const takenExamId = Number(req.params.takenExamId)
+    try {
+        const result = await pool.query('SELECT * FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
+        res.send(result.rows[0])
+    } catch (err) {
+        console.log(err);
+        res.status(404).end()
+    }
+})
+
+takenExamsRouter.post('/', async (req, res) => {
+    console.log("post for new taken exam")
+    console.log(req.body)
+    values = [req.body.exam_id, req.body.account_id, new Date()]
+    try {
+        const result = await pool.query("INSERT INTO taken_exam (exam_id, account_id, start_time) VALUES ($1,$2,$3)", values)
+        //console.log(result)
+        res.send("new taken exam saved")
+    } catch (err) {
+        res.status(500).send(err)   
+    }
+})
+
+takenExamsRouter.put('/:takenExamId', async (req, res) => {
+    console.log("put request to update taken exam")
+    const takenExamId = Number(req.params.takenExamId)
+    const values = [req.body.points, new Date(), takenExamId]
+    try {
+        const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3", values)
+        res.status(204).end()
+    } catch (err) {
+        res.status(404).send(err) 
+    }
+})
+
+takenExamsRouter.delete('/:takenExamId', async (req, res) => {
+    const takenExamId = Number(req.params.takenExamId)
+    try {
+        const result = await pool.query("DELETE FROM taken_exam WHERE taken_exam_id=$1", [takenExamId])
+        res.status(204).end()
+    } catch (err) {
+        res.status(404).send(err) 
+    }
+})
+
+module.exports = takenExamsRouter
