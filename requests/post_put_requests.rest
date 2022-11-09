@@ -83,6 +83,16 @@ Content-Type: application/json
     "answerOptionId": 4
 }
 
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "username": "kayttaja0",
+    "password": "salasana0",
+    "name": "kayttajannimi",
+    "isAdmin": false
+}
 
 
 
