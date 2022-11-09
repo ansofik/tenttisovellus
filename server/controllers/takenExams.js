@@ -1,6 +1,9 @@
 const pool = require('../db.js')
 const express = require('express')
+const answersRouter = require('./answers.js')
 const takenExamsRouter = express.Router()
+
+takenExamsRouter.use('/:takenExamId/answers', answersRouter)
 
 takenExamsRouter.get('/', async (req, res) => {
     console.log("received get request for taken exams")
@@ -28,7 +31,7 @@ takenExamsRouter.get('/:takenExamId', async (req, res) => {
 takenExamsRouter.post('/', async (req, res) => {
     console.log("post for new taken exam")
     console.log(req.body)
-    values = [req.body.exam_id, req.body.account_id, new Date()]
+    values = [req.body.examId, req.body.accountId, new Date()]
     try {
         const result = await pool.query("INSERT INTO taken_exam (exam_id, account_id, start_time) VALUES ($1,$2,$3)", values)
         //console.log(result)
