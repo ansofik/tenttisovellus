@@ -1,4 +1,4 @@
-GET http://localhost:8080/exams/
+GET http://localhost:8080/exams
 
 ###
 
@@ -18,8 +18,22 @@ GET http://localhost:8080/takenexams
 
 ###
 
+GET http://localhost:8080/takenexams?exam=1
+
+###
+
+GET http://localhost:8080/takenexams?user=2
+
+###
+
 GET http://localhost:8080/takenexams/2
 
 ###
 
 GET http://localhost:8080/takenexams/2/answers
+
+###
+GET http://localhost:8080/users
+
+###
+GET http://localhost:8080/users/1

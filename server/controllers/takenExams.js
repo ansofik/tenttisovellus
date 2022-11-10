@@ -7,8 +7,17 @@ takenExamsRouter.use('/:takenExamId/answers', answersRouter)
 
 takenExamsRouter.get('/', async (req, res) => {
     console.log("received get request for taken exams")
+    const examId = req.query.exam
+    const userId = req.query.user
     try {
-        const result = await pool.query('SELECT * FROM taken_exam')
+        let result = null
+        if (examId !== undefined) {
+            result = await pool.query('SELECT * FROM taken_exam WHERE exam_id=$1', [examId])
+        } else if (userId !== undefined) {
+            result = await pool.query('SELECT * FROM taken_exam WHERE account_id=$1', [userId])
+        } else {
+            result = await pool.query('SELECT * FROM taken_exam')
+        }
         res.send(result.rows)
     } catch (err) {
         console.log(err)
