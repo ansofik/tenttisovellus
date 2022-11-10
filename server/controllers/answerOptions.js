@@ -25,7 +25,7 @@ answerOptionsRouter.post('/', async (req, res) => {
     console.log(query)
     try {
         const result = await pool.query(query)
-        res.send("new answer option saved")
+        res.status(201).end()
     } catch (err) {
         res.status(500).send(err)   
     }

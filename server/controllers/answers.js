@@ -20,7 +20,7 @@ answersRouter.post('/', async (req, res) => {
     const values = [takenExamId, req.body.answerOptionId]
     try {
         const result = await pool.query('INSERT INTO answer (taken_exam_id, answer_option_id) VALUES ($1,$2)', values)
-        res.send('new answer saved')
+        res.status(201).end()
     } catch (err) {
         res.status(500).send(err)
     }

@@ -42,9 +42,10 @@ takenExamsRouter.post('/', async (req, res) => {
     console.log(req.body)
     values = [req.body.examId, req.body.accountId, new Date()]
     try {
-        const result = await pool.query("INSERT INTO taken_exam (exam_id, account_id, start_time) VALUES ($1,$2,$3)", values)
-        //console.log(result)
-        res.send("new taken exam saved")
+        const result = await pool.query("INSERT INTO taken_exam (exam_id, account_id, start_time) VALUES ($1,$2,$3) RETURNING taken_exam_id id", values)
+        console.log(result.rows[0].id)
+        res.location('/takenexams/' + result.rows[0].id)
+        res.status(201).end()
     } catch (err) {
         res.status(500).send(err)   
     }

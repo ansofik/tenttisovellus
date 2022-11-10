@@ -36,7 +36,7 @@ examsRouter.post('/', async (req, res) => {
     try {
         const result = await pool.query("INSERT INTO exam (name, published) VALUES ($1,$2)", [req.body.name, req.body.published])
         //console.log(result)
-        res.send("new exam saved")
+        res.status(201).end()
     } catch (err) {
         res.status(500).send(err)   
     }
