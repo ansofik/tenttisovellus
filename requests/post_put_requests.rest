@@ -19,7 +19,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/exams/1/questions
+POST http://localhost:8080/exams/100/questions
 content-type: application/json
 
 {
@@ -28,7 +28,7 @@ content-type: application/json
 
 ###
 
-PUT http://localhost:8080/exams/1/questions/3
+PUT http://localhost:8080/exams/1/questions/1000
 content-type: application/json
 
 {
@@ -37,7 +37,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/exams/1/questions/3/answeroptions
+POST http://localhost:8080/exams/1000/questions/1000/answeroptions
 content-type: application/json
 
 {
@@ -47,7 +47,7 @@ content-type: application/json
 
 ###
 
-PUT http://localhost:8080/exams/1/questions/3/answeroptions/7
+PUT http://localhost:8080/exams/1/questions/1000/answeroptions/100
 content-type: application/json
 
 {
@@ -92,6 +92,16 @@ Content-Type: application/json
     "password": "salasana0",
     "name": "kayttajannimi",
     "isAdmin": false
+}
+
+###
+PUT http://localhost:8080/users/1
+Content-Type: application/json
+
+{
+    "username": "uusinimi",
+    "password": "uusisalasana",
+    "name": "uusi kayttajan nimi"
 }
 
 

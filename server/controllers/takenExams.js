@@ -30,7 +30,11 @@ takenExamsRouter.get('/:takenExamId', async (req, res) => {
     const takenExamId = Number(req.params.takenExamId)
     try {
         const result = await pool.query('SELECT * FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
-        res.send(result.rows[0])
+        if (result.rowCount > 0) {
+            res.send(result.rows[0])
+        } else {
+            res.status(404).end()
+        }
     } catch (err) {
         console.log(err);
         res.status(404).end()
@@ -57,7 +61,11 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     const values = [req.body.points, new Date(), takenExamId]
     try {
         const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3", values)
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            res.status(404).end()
+        }
     } catch (err) {
         res.status(404).send(err) 
     }
@@ -67,7 +75,12 @@ takenExamsRouter.delete('/:takenExamId', async (req, res) => {
     const takenExamId = Number(req.params.takenExamId)
     try {
         const result = await pool.query("DELETE FROM taken_exam WHERE taken_exam_id=$1", [takenExamId])
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            console.log('no exam matches given id')
+            res.status(404).end()
+        }
     } catch (err) {
         res.status(404).send(err) 
     }

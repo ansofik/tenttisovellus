@@ -33,7 +33,11 @@ questionsRouter.put('/:questionId', async (req, res) => {
     const questionId = Number(req.params.questionId)
     try {
         const result = await pool.query("UPDATE question SET text=$1 WHERE question_id=$2", [req.body.text, questionId])
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            res.status(404).end()
+        }
     } catch (err) {
         res.status(404).send(err) 
     }
@@ -43,7 +47,11 @@ questionsRouter.delete('/:questionId', async (req, res) => {
     const questionId = Number(req.params.questionId)
     try {
         const result = await pool.query("DELETE FROM question WHERE question_id=$1", [questionId])
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            res.status(404).end()
+        }
     } catch (err) {
         res.status(404).send(err) 
     }

@@ -8,8 +8,8 @@ examsRouter.use('/:examId/questions', questionsRouter)
 examsRouter.get('/', async (req, res) => {
     console.log("received get request for exams")
     try {
-        const result = await pool.query('SELECT * FROM exam')
-        console.log(result)
+        const result = await pool.query('SELECT exam_id, name, published FROM exam ORDER BY exam_id')
+        console.log(result.rows)
         res.send(result.rows)
     } catch (err) {
         console.log(err)
@@ -22,8 +22,12 @@ examsRouter.get('/:examId', async (req, res) => {
     const examId = Number(req.params.examId)
     try {
         const result = await pool.query('SELECT * FROM exam WHERE exam_id=$1', [examId])
-        console.log(result)
-        res.send(result.rows[0])
+        if (result.rowCount > 0) {
+            res.send(result.rows[0])
+        } else {
+            console.log('no exam matches given id')
+            res.status(404).end()
+        }
     } catch (err) {
         console.log(err);
         res.status(404).end()
@@ -31,14 +35,14 @@ examsRouter.get('/:examId', async (req, res) => {
 })
 
 examsRouter.post('/', async (req, res) => {
-    console.log("post for new exam")
-    console.log(req.body)
+    console.log("post request for new exam")
+    const values = [req.body.name, req.body.published]
     try {
-        const result = await pool.query("INSERT INTO exam (name, published) VALUES ($1,$2)", [req.body.name, req.body.published])
-        //console.log(result)
-        res.status(201).end()
+        const result = await pool.query("INSERT INTO exam (name, published) VALUES ($1,$2) RETURNING exam_id", values)
+        res.status(201).send(result.rows[0].exam_id)
     } catch (err) {
-        res.status(500).send(err)   
+        console.log(err);
+        res.status(500).send(err)
     }
 })
 
@@ -48,9 +52,15 @@ examsRouter.put('/:examId', async (req, res) => {
     const values = [req.body.name, req.body.published, examId]
     try {
         const result = await pool.query("UPDATE exam SET name=$1, published=$2 WHERE exam_id=$3", values)
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            console.log('no exam matches given id')
+            res.status(404).end()
+        }
     } catch (err) {
-        res.status(404).send(err) 
+        console.log(err);
+        res.status(404).send(err)
     }
 })
 
@@ -58,9 +68,14 @@ examsRouter.delete('/:examId', async (req, res) => {
     const examId = Number(req.params.examId)
     try {
         const result = await pool.query("DELETE FROM exam WHERE exam_id=$1", [examId])
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            console.log('no exam matches given id')
+            res.status(404).end()
+        }
     } catch (err) {
-        res.status(404).send(err) 
+        res.status(404).send(err)
     }
 })
 

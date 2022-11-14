@@ -37,7 +37,11 @@ answerOptionsRouter.put('/:answeroptionId', async (req, res) => {
     const values = [req.body.text, req.body.correct, ansOpId]
     try {
         const result = await pool.query("UPDATE answer_option SET text=$1, correct=$2 WHERE answer_option_id=$3", values)
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            res.status(404).end()
+        }
     } catch (err) {
         res.status(404).send(err) 
     }
@@ -47,7 +51,11 @@ answerOptionsRouter.delete('/:answeroptionId', async (req, res) => {
     const answerOptionId = Number(req.params.questionId)
     try {
         const result = await pool.query("DELETE FROM answer_option WHERE answer_option_id=$1", [answerOptionId])
-        res.status(204).end()
+        if (result.rowCount > 0) {
+            res.status(204).end()
+        } else {
+            res.status(404).end()
+        }
     } catch (err) {
         res.status(404).send(err) 
     }

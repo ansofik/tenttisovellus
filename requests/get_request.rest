@@ -6,7 +6,7 @@ GET http://localhost:8080/exams/1
 
 ###
 
-GET http://localhost:8080/exams/1/questions
+GET http://localhost:8080/exams/100/questions
 
 ###
 
@@ -30,10 +30,11 @@ GET http://localhost:8080/takenexams/2
 
 ###
 
-GET http://localhost:8080/takenexams/2/answers
+GET http://localhost:8080/takenexams/200/answers
 
 ###
 GET http://localhost:8080/users
 
 ###
-GET http://localhost:8080/users/1
+GET http://localhost:8080/users/10
+
