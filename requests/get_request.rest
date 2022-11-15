@@ -18,11 +18,11 @@ GET http://localhost:8080/takenexams
 
 ###
 
-GET http://localhost:8080/takenexams?exam=10o
+GET http://localhost:8080/takenexams?exam=100
 
 ###
 
-GET http://localhost:8080/takenexams?user=9
+GET http://localhost:8080/takenexams?user=2o
 
 ###
 
@@ -30,7 +30,7 @@ GET http://localhost:8080/takenexams/2
 
 ###
 
-GET http://localhost:8080/takenexams/200/answers
+GET http://localhost:8080/takenexams/2/answers
 
 ###
 GET http://localhost:8080/users
