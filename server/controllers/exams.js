@@ -10,13 +10,17 @@ examsRouter.get('/', async (req, res) => {
     res.send(result.rows)
   } catch (err) {
     console.log(err)
-    res.status(404).end()
+    res.status(500).end()
   }
 })
 
 examsRouter.get('/:examId', async (req, res) => {
   console.log("received get request for exam by id")
   const examId = Number(req.params.examId)
+  if (isNaN(examId)) {
+    res.status(400).end()
+    return;
+  }
   try {
     const result = await pool.query('SELECT * FROM exam WHERE exam_id=$1', [examId])
     if (result.rowCount > 0) {
@@ -46,6 +50,10 @@ examsRouter.post('/', async (req, res) => {
 examsRouter.put('/:examId', async (req, res) => {
   console.log("put request to update exam")
   const examId = Number(req.params.examId)
+  if (isNaN(examId)) {
+    res.status(400).end()
+    return;
+  }
   const values = [req.body.name, req.body.published, examId]
   try {
     const result = await pool.query("UPDATE exam SET name=$1, published=$2 WHERE exam_id=$3", values)
@@ -63,6 +71,10 @@ examsRouter.put('/:examId', async (req, res) => {
 
 examsRouter.delete('/:examId', async (req, res) => {
   const examId = Number(req.params.examId)
+  if (isNaN(examId)) {
+    res.status(400).end()
+    return;
+  } 
   try {
     const result = await pool.query("DELETE FROM exam WHERE exam_id=$1", [examId])
     if (result.rowCount > 0) {
@@ -79,6 +91,10 @@ examsRouter.delete('/:examId', async (req, res) => {
 examsRouter.get('/:examId/questions', async (req, res) => {
   console.log("received get request for questions of an exam")
   const examId = Number(req.params.examId)
+  if (isNaN(examId)) {
+    res.status(400).end()
+    return;
+  }
   console.log('examId', examId)
   try {
     const result = await pool.query('SELECT * FROM question WHERE exam_id=$1', [examId])
@@ -95,9 +111,13 @@ examsRouter.get('/:examId/questions', async (req, res) => {
 
 examsRouter.post('/:examId/questions', async (req, res) => {
   const examId = Number(req.params.examId)
+  if (isNaN(examId)) {
+    res.status(400).end()
+    return;
+  }
   try {
-    const result = await pool.query("INSERT INTO question (exam_id, text) VALUES ($1,$2)", [examId, req.body.text])
-    res.status(201).end()
+    const result = await pool.query("INSERT INTO question (exam_id, text) VALUES ($1,$2) RETURNING question_id", [examId, req.body.text])
+    res.status(201).send(result.rows[0].question_id)
   } catch (err) {
     res.status(500).send(err)
   }

@@ -19,7 +19,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/exams/100/questions
+POST http://localhost:8080/exams/1/questions
 content-type: application/json
 
 {
@@ -37,7 +37,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/questions/1/answeroptions
+POST http://localhost:8080/questions/10o/answeroptions
 content-type: application/json
 
 {
