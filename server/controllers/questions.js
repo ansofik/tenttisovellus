@@ -1,60 +1,67 @@
 const pool = require('../db.js')
-const answerOptionsRouter = require('./answerOptions.js')
-const questionsRouter = require('express').Router({mergeParams: true})
-
-questionsRouter.use('/:questionId/answeroptions', answerOptionsRouter)
-
-questionsRouter.get('/', async (req, res) => {
-    console.log("received get request for question of exam")
-    const examId = Number(req.params.examId)
-    console.log('examId', examId)
-    try {
-        const result = await pool.query('SELECT * FROM question WHERE exam_id=$1', [examId])
-        console.log(result)
-        res.send(result.rows)
-    } catch (err) {
-        console.log(err);
-        res.status(404).end()
-    }
-})
-
-questionsRouter.post('/', async (req, res) => {
-    const examId = Number(req.params.examId)
-    try {
-        const result = await pool.query("INSERT INTO question (exam_id, text) VALUES ($1,$2)", [examId, req.body.text])
-        res.status(201).end()
-    } catch (err) {
-        res.status(500).send(err)   
-    }
-})
+const questionsRouter = require('express').Router()
 
 questionsRouter.put('/:questionId', async (req, res) => {
-    console.log("put request to update question")
-    const questionId = Number(req.params.questionId)
-    try {
-        const result = await pool.query("UPDATE question SET text=$1 WHERE question_id=$2", [req.body.text, questionId])
-        if (result.rowCount > 0) {
-            res.status(204).end()
-        } else {
-            res.status(404).end()
-        }
-    } catch (err) {
-        res.status(404).send(err) 
+  console.log("put request to update a question")
+  const questionId = Number(req.params.questionId)
+  try {
+    const result = await pool.query("UPDATE question SET text=$1 WHERE question_id=$2", [req.body.text, questionId])
+    if (result.rowCount > 0) {
+      res.status(204).end()
+    } else {
+      res.status(404).end()
     }
+  } catch (err) {
+    res.status(500).send(err)
+  }
 })
 
+
 questionsRouter.delete('/:questionId', async (req, res) => {
-    const questionId = Number(req.params.questionId)
-    try {
-        const result = await pool.query("DELETE FROM question WHERE question_id=$1", [questionId])
-        if (result.rowCount > 0) {
-            res.status(204).end()
-        } else {
-            res.status(404).end()
-        }
-    } catch (err) {
-        res.status(404).send(err) 
+  const questionId = Number(req.params.questionId)
+  try {
+    const result = await pool.query("DELETE FROM question WHERE question_id=$1", [questionId])
+    if (result.rowCount > 0) {
+      res.status(204).end()
+    } else {
+      res.status(404).end()
     }
+  } catch (err) {
+    res.status(500).send(err)
+  }
+})
+
+questionsRouter.get('/:questionId/answeroptions', async (req, res) => {
+  console.log("received get request for answer options of a question")
+  const questionId = Number(req.params.questionId)
+  try {
+    const result = await pool.query('SELECT * FROM answer_option WHERE question_id=$1', [questionId])
+    if (result.rowCount > 0) {
+      res.send(result.rows)
+    } else {
+      res.status(404).end()
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).end()
+  }
+})
+
+
+questionsRouter.post('/:questionId/answeroptions', async (req, res) => {
+  console.log('add answer option');
+  const questionId = Number(req.params.questionId)
+  const query = {
+    text: 'INSERT INTO answer_option (question_id, text, correct) VALUES ($1,$2,$3) RETURNING answer_option_id',
+    values: [questionId, req.body.text, req.body.correct],
+  }
+  console.log(query)
+  try {
+    const result = await pool.query(query)
+    res.status(201).send(result.rows[0].answer_option_id)
+  } catch (err) {
+    res.status(500).send(err)
+  }
 })
 
 module.exports = questionsRouter

@@ -28,7 +28,7 @@ content-type: application/json
 
 ###
 
-PUT http://localhost:8080/exams/1/questions/1000
+PUT http://localhost:8080/questions/1
 content-type: application/json
 
 {
@@ -37,7 +37,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/exams/1000/questions/1000/answeroptions
+POST http://localhost:8080/questions/1/answeroptions
 content-type: application/json
 
 {
@@ -47,7 +47,7 @@ content-type: application/json
 
 ###
 
-PUT http://localhost:8080/exams/1/questions/1000/answeroptions/100
+PUT http://localhost:8080/answeroptions/140
 content-type: application/json
 
 {
