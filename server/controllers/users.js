@@ -1,6 +1,41 @@
 const pool = require('../db.js')
 const express = require('express')
+const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
 const usersRouter = express.Router()
+
+usersRouter.post('/', async (req, res, next) => {
+    const { email, password } = req.body
+
+    const saltRounds = 10
+    try {
+      const passwordHash = await bcrypt.hash(password, saltRounds)
+      const values = [email, passwordHash, false]
+      result = await pool.query('INSERT INTO account (email, password, is_admin) VALUES ($1,$2,$3) RETURNING account_id id')
+    } catch (err) {
+      return next(err);
+    }
+  
+    const userId = result.rows[0].id
+    let token;
+    try {
+      token = jwt.sign(
+        { userId: userId, email: email },
+        'secretkeyappearshere',
+        { expiresIn: '1h' }
+      )
+    } catch (err) {
+      return next(err)
+    }
+  
+    res.status(201).json({
+        success: true,
+        data: {
+          userId: userId,
+          email: email, token: token
+        }
+      })
+  })
 
 usersRouter.get('/', async (req, res) => {
     console.log('get request for users')
@@ -27,21 +62,6 @@ usersRouter.get('/:userId', async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(404).end()
-    }
-})
-
-usersRouter.post('/', async (req, res) => {
-    console.log('post request for new user')
-    const b = req.body;
-    const values = [b.username, b.password, b.name, b.isAdmin]
-    try {
-        const result = await pool.query('INSERT INTO account (username, password, name, is_admin) VALUES ($1,$2,$3,$4) RETURNING account_id', values)
-        console.log('inserted rows', result.rowCount)
-        console.log('id of inserted user', result.rows[0])
-        res.status(201).send(result.rows[0].account_id)
-    } catch (err) {
-        console.log(err)
-        res.status(500).send(err)
     }
 })
 
