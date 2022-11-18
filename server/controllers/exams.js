@@ -94,11 +94,11 @@ examsRouter.delete('/:examId', async (req, res) => {
     return;
   } 
   try {
-    BEGIN;
+    await pool.query('BEGIN')
     await pool.query('DELETE FROM option o USING question q WHERE o.question_id = q.question_id AND q.exam_id=$1', [examId])
     await pool.query('DELETE FROM question q WHERE q.exam_id=$1', [examId])
     const result = await pool.query("DELETE FROM exam WHERE exam_id=$1", [examId])
-    COMMIT;
+    await pool.query('COMMIT')
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {
@@ -106,6 +106,7 @@ examsRouter.delete('/:examId', async (req, res) => {
       res.status(404).end()
     }
   } catch (err) {
+    await pool.query('ROLLBACK')
     res.status(500).send(err)
   }
 })
