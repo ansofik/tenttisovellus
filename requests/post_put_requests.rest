@@ -104,5 +104,26 @@ Content-Type: application/json
     "name": "uusi kayttajan nimi"
 }
 
+### 
+
+POST http://localhost:8080/users/
+Content-Type: application/json
+
+{
+    "email": "sposti",
+    "password": "salasana"
+}
+
+### 
+
+POST http://localhost:8080/login/
+Content-Type: application/json
+
+{
+    "email": "sposti",
+    "password": "salasana"
+}
+
+
 
 

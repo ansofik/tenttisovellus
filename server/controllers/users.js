@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const usersRouter = express.Router()
 
+// create new user
 usersRouter.post('/', async (req, res, next) => {
     const { email, password } = req.body
 
@@ -11,7 +12,7 @@ usersRouter.post('/', async (req, res, next) => {
     try {
       const passwordHash = await bcrypt.hash(password, saltRounds)
       const values = [email, passwordHash, false]
-      result = await pool.query('INSERT INTO account (email, password, is_admin) VALUES ($1,$2,$3) RETURNING account_id id')
+      result = await pool.query('INSERT INTO account (email, password, is_admin) VALUES ($1,$2,$3) RETURNING account_id id', values)
     } catch (err) {
       return next(err);
     }
