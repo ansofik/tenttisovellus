@@ -14,21 +14,39 @@ examsRouter.get('/', async (req, res) => {
   }
 })
 
+// get specific exam and its questions and answer options in json format
 examsRouter.get('/:examId', async (req, res) => {
-  console.log("received get request for exam by id")
+  console.log("received get request for an exam by id")
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
     res.status(400).end()
     return;
   }
+
+  const query = {
+    text: 'SELECT e.exam_id, e.name, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e JOIN question q ON e.exam_id = q.exam_id JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1',
+    values: [examId]
+  }
   try {
-    const result = await pool.query('SELECT * FROM exam WHERE exam_id=$1', [examId])
-    if (result.rowCount > 0) {
-      res.send(result.rows[0])
-    } else {
+    const result = await pool.query(query)
+    if (result.rowCount === 0) {
       console.log('no exam matches given id')
       res.status(404).end()
+      return;
     }
+    const fr = result.rows[0]
+    const initialVal = {examId: fr.exam_id, name: fr.name, questions: []}
+    const obj = result.rows.reduce((prev, curr) => {
+      const match = prev.questions.find(q => q.questionId === curr.question_id)
+      const newOpt = {optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct}
+      if (match) {
+        match.options.push(newOpt)
+      } else {
+        prev.questions.push({questionId: curr.question_id, questionText: curr.question_text, options: [newOpt]})
+      }
+      return prev
+    }, initialVal)
+    res.json(obj)
   } catch (err) {
     console.log(err);
     res.status(500).end()
@@ -76,7 +94,11 @@ examsRouter.delete('/:examId', async (req, res) => {
     return;
   } 
   try {
+    BEGIN;
+    await pool.query('DELETE FROM option o USING question q WHERE o.question_id = q.question_id AND q.exam_id=$1', [examId])
+    await pool.query('DELETE FROM question q WHERE q.exam_id=$1', [examId])
     const result = await pool.query("DELETE FROM exam WHERE exam_id=$1", [examId])
+    COMMIT;
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {
@@ -85,27 +107,6 @@ examsRouter.delete('/:examId', async (req, res) => {
     }
   } catch (err) {
     res.status(500).send(err)
-  }
-})
-
-examsRouter.get('/:examId/questions', async (req, res) => {
-  console.log("received get request for questions of an exam")
-  const examId = Number(req.params.examId)
-  if (isNaN(examId)) {
-    res.status(400).end()
-    return;
-  }
-  console.log('examId', examId)
-  try {
-    const result = await pool.query('SELECT * FROM question WHERE exam_id=$1', [examId])
-    if (result.rowCount > 0) {
-      res.send(result.rows)
-    } else {
-      res.status(404).end()
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).end()
   }
 })
 

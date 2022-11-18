@@ -1,3 +1,4 @@
+//not needed?
 const pool = require('../db.js')
 const questionsRouter = require('express').Router()
 
@@ -39,28 +40,7 @@ questionsRouter.delete('/:questionId', async (req, res) => {
   }
 })
 
-questionsRouter.get('/:questionId/answeroptions', async (req, res) => {
-  console.log("received get request for answer options of a question")
-  const questionId = Number(req.params.questionId)
-  if (isNaN(questionId)) {
-    res.status(400).end()
-    return;
-  }
-  try {
-    const result = await pool.query('SELECT * FROM answer_option WHERE question_id=$1', [questionId])
-    if (result.rowCount > 0) {
-      res.send(result.rows)
-    } else {
-      res.status(404).end()
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).end()
-  }
-})
-
-
-questionsRouter.post('/:questionId/answeroptions', async (req, res) => {
+questionsRouter.post('/:questionId/options', async (req, res) => {
   console.log('add answer option');
   const questionId = Number(req.params.questionId)
   if (isNaN(questionId)) {
@@ -68,13 +48,13 @@ questionsRouter.post('/:questionId/answeroptions', async (req, res) => {
     return;
   }
   const query = {
-    text: 'INSERT INTO answer_option (question_id, text, correct) VALUES ($1,$2,$3) RETURNING answer_option_id',
+    text: 'INSERT INTO option (question_id, text, correct) VALUES ($1,$2,$3) RETURNING option_id',
     values: [questionId, req.body.text, req.body.correct],
   }
   console.log(query)
   try {
     const result = await pool.query(query)
-    res.status(201).send(result.rows[0].answer_option_id)
+    res.status(201).send(result.rows[0].option_id)
   } catch (err) {
     res.status(500).send(err)
   }
