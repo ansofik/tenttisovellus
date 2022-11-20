@@ -1,3 +1,5 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const app = express()
@@ -16,7 +18,15 @@ app.use('/takenexams', takenExamsRouter)
 app.use('/users', usersRouter)
 app.use('/login', loginRouter)
 
-
-app.listen(port, () => {
+https.createServer(
+  {
+    key: fs.readFileSync('./security/server.key'),
+    cert: fs.readFileSync('./security/server.crt'),
+  },
+  app
+).listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
+/* app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+}) */
