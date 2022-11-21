@@ -1,5 +1,6 @@
 const pool = require('../db.js')
 const express = require('express')
+const isAdmin = require('../middlewares/isAdmin')
 const examsRouter = express.Router()
 
 examsRouter.get('/', async (req, res) => {
@@ -34,26 +35,27 @@ examsRouter.get('/:examId', async (req, res) => {
       res.status(404).end()
       return;
     }
-    const fr = result.rows[0]
-    const initialVal = {examId: fr.exam_id, name: fr.name, questions: []}
-    const obj = result.rows.reduce((prev, curr) => {
-      const match = prev.questions.find(q => q.questionId === curr.question_id)
-      const newOpt = {optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct}
+    const questionList = result.rows.reduce((prev, curr) => {
+      const match = prev.find(q => q.questionId === curr.question_id)
+      const newOpt = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct }
       if (match) {
         match.options.push(newOpt)
       } else {
-        prev.questions.push({questionId: curr.question_id, questionText: curr.question_text, options: [newOpt]})
+        prev.push({ questionId: curr.question_id, questionText: curr.question_text, options: [newOpt] })
       }
       return prev
-    }, initialVal)
-    res.json(obj)
+    }, [])
+
+    const dataObj = { examId: result.rows[0].exam_id, name: result.rows[0].name, questions: questionList }
+    res.json(dataObj)
   } catch (err) {
     console.log(err);
     res.status(500).end()
   }
 })
 
-examsRouter.post('/', async (req, res) => {
+examsRouter.post('/', isAdmin, async (req, res) => {
+
   console.log("post request for new exam")
   const values = [req.body.name, req.body.published]
   try {
@@ -65,7 +67,7 @@ examsRouter.post('/', async (req, res) => {
   }
 })
 
-examsRouter.put('/:examId', async (req, res) => {
+examsRouter.put('/:examId', isAdmin, async (req, res) => {
   console.log("put request to update exam")
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
@@ -87,12 +89,12 @@ examsRouter.put('/:examId', async (req, res) => {
   }
 })
 
-examsRouter.delete('/:examId', async (req, res) => {
+examsRouter.delete('/:examId', isAdmin, async (req, res) => {
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
     res.status(400).end()
     return;
-  } 
+  }
   try {
     await pool.query('BEGIN')
     await pool.query('DELETE FROM option o USING question q WHERE o.question_id = q.question_id AND q.exam_id=$1', [examId])
@@ -111,7 +113,7 @@ examsRouter.delete('/:examId', async (req, res) => {
   }
 })
 
-examsRouter.post('/:examId/questions', async (req, res) => {
+examsRouter.post('/:examId/questions', isAdmin, async (req, res) => {
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
     res.status(400).end()

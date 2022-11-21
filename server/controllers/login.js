@@ -7,19 +7,22 @@ const loginRouter = express.Router()
 loginRouter.post('/', async (req, res, next) => {
   const { email, password } = req.body
 
-  let existingUser;
+  let existingUser = false;
+  let passwordMatches = false;
   try {
     let result = await pool.query('SELECT account_id, email, password FROM account WHERE email=$1', [email])
-    result = result.rows[0]
-    existingUser = { id: result.id, email: result.email, password: result.password }
-    passwordMatches = await bcrypt.compare(password, existingUser.password)
+    if (result.rowCount > 0) {
+      result = result.rows[0]
+      existingUser = { id: result.account_id, email: result.email, password: result.password }
+      passwordMatches = await bcrypt.compare(password, existingUser.password)
+    }
   } catch (err) {
     return next(err)
   }
 
   if (!existingUser || !passwordMatches) {
     return res.status(401).json({
-      error: 'Wrong username or password'
+      error: 'Incorrect email or password'
     })
   }
   

@@ -1,4 +1,3 @@
-//not needed?
 const pool = require('../db.js')
 const questionsRouter = require('express').Router()
 
@@ -20,7 +19,6 @@ questionsRouter.put('/:questionId', async (req, res) => {
     res.status(500).send(err)
   }
 })
-
 
 questionsRouter.delete('/:questionId', async (req, res) => {
   const questionId = Number(req.params.questionId)

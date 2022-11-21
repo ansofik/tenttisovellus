@@ -1,4 +1,3 @@
-//not needed?
 const pool = require('../db.js')
 const optionsRouter = require('express').Router()
 
