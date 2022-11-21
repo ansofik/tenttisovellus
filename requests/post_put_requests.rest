@@ -110,7 +110,7 @@ POST http://localhost:8080/users/
 Content-Type: application/json
 
 {
-    "email": "sposti",
+    "email": "adminEmail",
     "password": "salasana"
 }
 
@@ -124,6 +124,25 @@ Content-Type: application/json
     "password": "salasana"
 }
 
+### 
+
+POST http://localhost:8080/login/
+Content-Type: application/json
+
+{
+    "email": "adminEmail",
+    "password": "salasana"
+}
+
+### 
+POST http://localhost:8080/exams/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTAzNTkyNywiZXhwIjoxNjY5MDM5NTI3fQ.RE6v3ZnAXNh2RsAEP1q5FWUC_7oakskneXO4oED1wgk
+
+{
+    "name": "C perusteet",
+    "published": "true"
+}
 
 
 

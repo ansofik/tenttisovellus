@@ -1,6 +1,7 @@
 const pool = require('../db.js')
 const express = require('express')
 const takenExamsRouter = express.Router()
+const isAdmin = require('../middlewares/isAdmin')
 
 takenExamsRouter.get('/', async (req, res) => {
   console.log("received get request for taken exams")
@@ -82,7 +83,7 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
   }
 })
 
-takenExamsRouter.delete('/:takenExamId', async (req, res) => {
+takenExamsRouter.delete('/:takenExamId', isAdmin, async (req, res) => {
   const takenExamId = Number(req.params.takenExamId)
   if (isNaN(takenExamId)) {
     res.status(400).end()

@@ -17,7 +17,7 @@ const loginRouter = require('./controllers/login')
 app.use(cors())
 app.use(express.json())
 
-app.use('/exams', examsRouter)
+app.use('/exams', verifyToken, examsRouter)
 app.use('/questions', verifyToken, isAdmin, questionsRouter)
 app.use('/options', verifyToken, isAdmin, optionsRouter)
 app.use('/takenexams', verifyToken, takenExamsRouter)
