@@ -69,14 +69,14 @@ takenExamsRouter.post('/', async (req, res) => {
 
 takenExamsRouter.put('/:takenExamId', async (req, res) => {
   console.log("put request to update taken exam")
-  const takenExamId = Number(req.params.takenExamId)
+  let takenExamId = Number(req.params.takenExamId)
   if (isNaN(takenExamId)) {
     res.status(400).end()
     return;
   }
-  
+
   try {
-    const user = await pool.query('GET account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
+    const user = await pool.query('SELECT account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
     if (user.rows[0].account_id !== req.decoded.userId) {
       return res.status(403).end()
     }
@@ -84,11 +84,11 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     res.status(500).send(err)
     return
   }
-  
+
   const values = [req.body.points, new Date(), takenExamId]
   try {
     console.log('here');
-    
+
     const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3", values)
     if (result.rowCount > 0) {
       res.status(204).end()
@@ -127,7 +127,7 @@ takenExamsRouter.get('/:takenExamId/answers', async (req, res) => {
   }
 
   try {
-    const user = await pool.query('GET account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
+    const user = await pool.query('SELECT account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
     if (user.rows[0].account_id !== req.decoded.userId) {
       return res.status(403).end()
     }
@@ -149,17 +149,27 @@ takenExamsRouter.get('/:takenExamId/answers', async (req, res) => {
 })
 
 takenExamsRouter.post('/:takenExamId/answers', async (req, res) => {
-  const takenExamId = req.params.takenExamId
+  const takenExamId = Number(req.params.takenExamId)
   if (isNaN(takenExamId)) {
     res.status(400).end()
     return;
   }
-  const values = [takenExamId, req.body.answerOptionId]
+
   try {
-    const result = await pool.query('INSERT INTO answer (taken_exam_id, answer_option_id) VALUES ($1,$2) RETURNING answer_id', values)
-    res.status(201).send(result.rows[0].answer_id)
+    const user = await pool.query('SELECT account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
+    if (user.rows[0].account_id !== req.decoded.userId) {
+      return res.status(403).end()
+    }
   } catch (err) {
     res.status(500).send(err)
+
+    const values = [takenExamId, req.body.answerOptionId]
+    try {
+      const result = await pool.query('INSERT INTO answer (taken_exam_id, answer_option_id) VALUES ($1,$2) RETURNING answer_id', values)
+      res.status(201).send(result.rows[0].answer_id)
+    } catch (err) {
+      res.status(500).send(err)
+    }
   }
 })
 
