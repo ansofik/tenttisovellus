@@ -2,8 +2,7 @@ GET http://localhost:8080/exams/
 
 ###
 
-GET http://localhost:8080/exams/10
-
+GET http://localhost:8080/exams/1
 ###
 
 GET http://localhost:8080/exams/16o/questions
@@ -15,6 +14,7 @@ GET http://localhost:8080/questions/1/answeroptions
 ###
 
 GET http://localhost:8080/takenexams
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTE1MzU5NSwiZXhwIjoxNjY5MTU3MTk1fQ.axb90jD313sZGOUxm-d5eDDC3TkRjdCCde3vsZhCW38
 
 ###
 
@@ -34,7 +34,12 @@ GET http://localhost:8080/takenexams/2/answers
 
 ###
 GET http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTE0OTk2NCwiZXhwIjoxNjY5MTUzNTY0fQ.Altt4BfWa2eIdTj3joGP5x6GGa09v830qRXfqzXEDH0
 
 ###
-GET http://localhost:8080/users/10
+GET http://localhost:8080/users/27
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTE0OTk2NCwiZXhwIjoxNjY5MTUzNTY0fQ.Altt4BfWa2eIdTj3joGP5x6GGa09v830qRXfqzXEDH0
 
+### 
+GET http://localhost:8080/takenexams/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTE0OTk2NCwiZXhwIjoxNjY5MTUzNTY0fQ.Altt4BfWa2eIdTj3joGP5x6GGa09v830qRXfqzXEDH0

@@ -7,7 +7,7 @@ const loginRouter = express.Router()
 loginRouter.post('/', async (req, res, next) => {
   const { email, password } = req.body
 
-  let existingUser = false;
+  let existingUser = null;
   let passwordMatches = false;
   try {
     let result = await pool.query('SELECT account_id, email, password FROM account WHERE email=$1', [email])
@@ -17,7 +17,7 @@ loginRouter.post('/', async (req, res, next) => {
       passwordMatches = await bcrypt.compare(password, existingUser.password)
     }
   } catch (err) {
-    return next(err)
+    res.status(500).send(err)
   }
 
   if (!existingUser || !passwordMatches) {

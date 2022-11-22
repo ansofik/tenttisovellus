@@ -43,7 +43,7 @@ usersRouter.post('/', async (req, res, next) => {
 usersRouter.get('/', isAdmin, async (req, res) => {
   console.log('get request for users')
   try {
-    const result = await pool.query('SELECT account_id, username, name FROM account')
+    const result = await pool.query('SELECT account_id, email, name FROM account')
     res.send(result.rows)
   } catch (err) {
     console.log(err)
@@ -54,8 +54,12 @@ usersRouter.get('/', isAdmin, async (req, res) => {
 usersRouter.get('/:userId', async (req, res) => {
   console.log('get request for user by id')
   const userId = req.params.userId
+
+  if (userId !== req.decoded.userId) {
+    return res.status(403).end()
+  }
   try {
-    const result = await pool.query('SELECT account_id, username, name FROM account WHERE account_id =$1', [userId])
+    const result = await pool.query('SELECT account_id, email, name FROM account WHERE account_id =$1', [userId])
     if (result.rowCount > 0) {
       res.send(result.rows[0])
     } else {
@@ -71,10 +75,13 @@ usersRouter.get('/:userId', async (req, res) => {
 usersRouter.put('/:userId', async (req, res) => {
   console.log("put request to update user")
   const userId = Number(req.params.userId)
+  if (userId !== req.decoded.userId) {
+    return res.status(403).end()
+  }
   const b = req.body;
   const values = [b.username, b.name, b.password, userId]
   try {
-    const result = await pool.query("UPDATE account SET username=$1, name=$2, password=$3 WHERE account_id=$4", values)
+    const result = await pool.query("UPDATE account SET email=$1, name=$2, password=$3 WHERE account_id=$4", values)
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {

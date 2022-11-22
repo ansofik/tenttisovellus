@@ -59,16 +59,19 @@ content-type: application/json
 
 POST http://localhost:8080/takenexams
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTE1MzU5NSwiZXhwIjoxNjY5MTU3MTk1fQ.axb90jD313sZGOUxm-d5eDDC3TkRjdCCde3vsZhCW38
+
 
 {
     "examId": 1,
-    "accountId": 2
+    "accountId": 27
 }
 
 ###
 
-PUT http://localhost:8080/takenexams/6
+PUT http://localhost:8080/takenexams/2
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsImVtYWlsIjoiYWRtaW5FbWFpbCIsImlhdCI6MTY2OTE1NzIzNCwiZXhwIjoxNjY5MTYwODM0fQ.VvUOVpUSwfOMdLQX6dl9RhE0De-caP3V6u6mFtmHm_o
 
 {
     "points": 100
@@ -143,6 +146,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNyIsI
     "name": "C perusteet",
     "published": "true"
 }
+
 
 
 

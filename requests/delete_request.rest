@@ -1,9 +1,9 @@
 
-DELETE http://localhost:8080/exams/1000o
+DELETE http://localhost:8080/exams/16
 
 ###
 
-DELETE http://localhost:8080/questions/10o
+DELETE http://localhost:8080/questions/10
 
 ###
 
@@ -11,5 +11,5 @@ DELETE http://localhost:8080/answeroptions/1400
 
 ###
 
-DELETE http://localhost:8080/takenexams/5
+DELETE http://localhost:8080/takenexams/28
 

@@ -33,6 +33,7 @@ takenExamsRouter.get('/', async (req, res) => {
 
 takenExamsRouter.get('/:takenExamId', async (req, res) => {
   console.log("received get request for taken exam by id")
+  console.log(req.decoded)
   const takenExamId = Number(req.params.takenExamId)
   if (isNaN(takenExamId)) {
     res.status(400).end()
@@ -53,7 +54,10 @@ takenExamsRouter.get('/:takenExamId', async (req, res) => {
 
 takenExamsRouter.post('/', async (req, res) => {
   console.log("post for new taken exam")
-  console.log(req.body)
+  console.log(req.body, req.decoded)
+  if (req.body.accountId != req.decoded.userId) {
+    return res.status(403).end()
+  }
   values = [req.body.examId, req.body.accountId, new Date()]
   try {
     const result = await pool.query("INSERT INTO taken_exam (exam_id, account_id, start_time) VALUES ($1,$2,$3) RETURNING taken_exam_id id", values)
@@ -70,8 +74,21 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     res.status(400).end()
     return;
   }
+  
+  try {
+    const user = await pool.query('GET account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
+    if (user.rows[0].account_id !== req.decoded.userId) {
+      return res.status(403).end()
+    }
+  } catch (err) {
+    res.status(500).send(err)
+    return
+  }
+  
   const values = [req.body.points, new Date(), takenExamId]
   try {
+    console.log('here');
+    
     const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3", values)
     if (result.rowCount > 0) {
       res.status(204).end()
@@ -108,6 +125,16 @@ takenExamsRouter.get('/:takenExamId/answers', async (req, res) => {
     res.status(400).end()
     return;
   }
+
+  try {
+    const user = await pool.query('GET account_id FROM taken_exam WHERE taken_exam_id=$1', [takenExamId])
+    if (user.rows[0].account_id !== req.decoded.userId) {
+      return res.status(403).end()
+    }
+  } catch (err) {
+    res.status(500).send(err)
+  }
+
   try {
     const result = await pool.query('SELECT * FROM answer WHERE taken_exam_id=$1', [takenExamId])
     if (result.rowCount > 0) {
