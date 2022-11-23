@@ -1,8 +1,14 @@
 import './App.css';
 import Header from './Header';
+import Home from './Home';
+import Exams from './Exams';
 import Exam from './Exam';
-import { useState, useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import axios from 'axios'
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 
 function reducer(state, action) {
   switch (action.type) {
@@ -58,8 +64,22 @@ function reducer(state, action) {
     }
 
     case 'INIT_DATA':
-      console.log("initializing data")
-      return { ...action.payload, initialized: true, save: false };
+      console.log("initialize data")
+      console.log(action.payload);
+
+      return { ...state, exams: action.payload, initialized: true, save: false };
+
+    case 'SELECT_EXAM':
+      console.log('select exam');
+      console.log(action.payload);
+      return { ...state, selectedExamId: action.payload, selectedExamSaved: false}
+
+    case 'STORE_EXAM':
+      console.log('store exam loaded from server');
+      console.log(action.payload);
+      return { ...state,
+              exams: state.exams.map(exam => exam.id == action.payload.id ? action.payload : exam),
+              selectedExamSaved: true}
 
     case 'UPDATED_STORAGE':
       return { ...state, save: false };
@@ -71,18 +91,13 @@ function reducer(state, action) {
 
 const App = () => {
 
-  const [examData, dispatch] = useReducer(reducer, { initialized: false });
-  // user login info hardcoded for testing of authorization to make post requests
-  const [loggedInUser, setLoggedInUser] = useState({ username: "user_admin", password: "password_admin" })
-  /* const [loggedInUser, setLoggedInUser] = useState({ username: "user0", password: "password0" }) */
- 
-  const [selectedExam, setSelectedExam] = useState({ index: 0, save: false });
+  const [data, dispatch] = useReducer(reducer, { initialized: false, selectedExamId: null});
 
-  // get initial data from the server
+  // get exam titles from the server
   useEffect(() => {
     const getExamData = async () => {
       try {
-        const response = await axios('http://localhost:8080');
+        const response = await axios('http://localhost:8080/exams')
         console.log("response", response);
         dispatch({ type: 'INIT_DATA', payload: response.data });
       } catch (error) {
@@ -92,56 +107,46 @@ const App = () => {
     getExamData()
   }, []);
 
-  // save updated exam data to the server
+  // get questions and answer options from selected exam from the server
   useEffect(() => {
-    const saveExamData = async () => {
+    const getQuestions = async () => {
+      console.log("loading questions")
       try {
-        const response = await axios.post('http://localhost:8080', {
-          data: examData,
-          userdata: loggedInUser
-        })
-        console.log("response", response)
-        dispatch({ type: 'UPDATED_STORAGE' })
-      } catch (error) {
-        console.log("Error", error)
+        console.log(typeof data.selectedExamId)
+        const response = await axios(`http://localhost:8080/exams/${data.selectedExamId}/`)
+        console.log("response for get questions", response)
+        dispatch({ type: 'STORE_EXAM', payload: response.data}) 
+      } catch (err) {
+        console.log("could not get exam questions and options", err)
       }
     }
-    if (examData.save === true) {
-      saveExamData()
+    if (data.selectedExamId !== null) {
+      getQuestions()
     }
-  }, [examData.save, selectedExam.save]);
-
-
-  const [timer, setTimer] = useState(null)
-
-  useEffect(() => {
-    if (examData.save == true) {
-      if (timer !== null) {
-        console.log("before", timer)
-        clearTimeout(timer)
-        console.log("after", timer)
-      }
-      setTimer(setTimeout(() => alert("Muista tallentaa"), 600000))
-    }
-  }, [examData.save]);
-
+  }, [data.selectedExamId])
 
   return (
-    <div>
+    <Router>
       <Header />
-      <div className="center">
-        <nav>
-          <ul className="testMenu">
-            {examData.initialized && examData.exams.map((exam, i) => <li><button onClick={() => setSelectedExam({ index: i, save: true })}>{exam.name}</button></li>)}
-          </ul>
-        </nav>
-        {examData.initialized && <Exam exam={examData.exams[selectedExam.index]} examIndex={selectedExam.index} dispatch={dispatch} />}
-        <nav>
-          <a href="" className="showAns">Näytä vastaukset</a>
-        </nav>
-      </div>
-    </div>
+
+      <Routes>
+        <Route path='/exams' element={<div>
+          <Exams exams={data.exams} dispatch={dispatch} />
+          {console.log('exams', data.exams)}
+          {data.selectedExamSaved === true && <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
+        </div>} />
+        <Route path='/' element={<Home />} />
+      </Routes>
+    </Router>
+
   );
 }
 
 export default App;
+
+
+
+
+
+
+

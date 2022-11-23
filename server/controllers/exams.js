@@ -6,7 +6,7 @@ const examsRouter = express.Router()
 examsRouter.get('/', async (req, res) => {
   console.log("received get request for exams")
   try {
-    const result = await pool.query('SELECT exam_id, name, published FROM exam ORDER BY exam_id')
+    const result = await pool.query('SELECT exam_id id, name, published FROM exam ORDER BY exam_id')
     console.log(result.rows)
     res.send(result.rows)
   } catch (err) {
@@ -46,7 +46,7 @@ examsRouter.get('/:examId', async (req, res) => {
       return prev
     }, [])
 
-    const dataObj = { examId: result.rows[0].exam_id, name: result.rows[0].name, questions: questionList }
+    const dataObj = { id: result.rows[0].exam_id, name: result.rows[0].name, questions: questionList }
     res.json(dataObj)
   } catch (err) {
     console.log(err);
@@ -55,7 +55,6 @@ examsRouter.get('/:examId', async (req, res) => {
 })
 
 examsRouter.post('/', isAdmin, async (req, res) => {
-
   console.log("post request for new exam")
   const values = [req.body.name, req.body.published]
   try {

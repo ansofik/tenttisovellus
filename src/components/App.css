@@ -4,7 +4,7 @@ body {
 }
 
 header {
-  background-color: royalblue;
+  background-color: grey;
   padding:10px;
 }
 
@@ -13,20 +13,21 @@ header nav {
   /* border: 2px solid black; */
 }
 
-.topNav {
+.navbar {
   list-style: none;
   display: flex;
   /* border: 2px solid black; */
 }
 
-.topNav li:last-child {
+/* .navbar li:last-child {
   margin-left: auto;
-}
+} */
 
-.topNav a {
+.navbar a {
   padding:10px;
   text-transform: uppercase;
-  color: white;
+  color: black;
+  font-weight: bold;
   text-decoration: none;
 }
 
@@ -48,11 +49,10 @@ header nav {
   /* border: 2px solid black; */
 }
 
-.testMenu a {
+.testMenu li {
   padding: 10px;
   text-transform: uppercase;
   color: royalblue;
-  text-decoration: none;
 }
 
 .questAns {
