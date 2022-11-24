@@ -17,14 +17,14 @@ const loginRouter = require('./controllers/login')
 app.use(cors())
 app.use(express.json())
 
-app.use('/exams', verifyToken, examsRouter)
+app.use('/exams', /* verifyToken, */ examsRouter)
 app.use('/questions', verifyToken, isAdmin, questionsRouter)
 app.use('/options', verifyToken, isAdmin, optionsRouter)
 app.use('/takenexams', verifyToken, takenExamsRouter)
-app.use('/users', verifyToken, usersRouter)
+app.use('/users', usersRouter)
 app.use('/login', loginRouter)
 
-https.createServer(
+/* https.createServer(
   {
     key: fs.readFileSync('./security/server.key'),
     cert: fs.readFileSync('./security/server.crt'),
@@ -32,8 +32,8 @@ https.createServer(
   app
 ).listen(port, () => {
   console.log(`Server running on port ${port}`)
-})
-
-/* app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
 }) */
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+})

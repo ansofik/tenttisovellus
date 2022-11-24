@@ -16,12 +16,12 @@ const Exam = ({ exam, dispatch }) => {
           }
         })
       }} value={props.exam.name} /> */}
-      <ul>
+      {/* <ul>
           {exam.questions.map(question => <li key={question.questionId}>{question.questionText}</li>)}
-        </ul>
-      {/* <div>
-        {exam.questions.map((question, index) => <Question question={question} questionIndex={index} examIndex={exam.examId} dispatch={dispatch} />)}
-      </div> */}
+        </ul> */}
+      <div>
+        {exam.questions.map(question=> <Question question={question} dispatch={dispatch} />)}
+      </div>
     </div>
   );
 }

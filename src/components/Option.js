@@ -1,13 +1,13 @@
 import './App.css';
 
-const Answer = (props) => {
+const Option = ({option, dispatch}) => {
   return (
     <div>
       <div className="ans">
         <input type="checkbox" />
-        <label>{props.answer}</label>
+        <label>{option.optionText}</label>
       </div>
-      <div>
+      {/* <div>
         <label>Muuta: </label>
         <input type="text" onChange={(event) => {
           props.dispatch({
@@ -20,9 +20,9 @@ const Answer = (props) => {
             }
           })
         }} />
-      </div>
+      </div> */}
     </div>
   );
 }
 
-export default Answer;
+export default Option;
