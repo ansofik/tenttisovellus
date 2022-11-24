@@ -8,7 +8,7 @@ import { useReducer, useEffect } from 'react';
 import axios from 'axios'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link
+  Routes, Route, Navigate
 } from 'react-router-dom'
 
 function reducer(state, action) {
@@ -90,9 +90,9 @@ function reducer(state, action) {
     case 'PASSWORD_CHANGED':
       return { ...state, loginData: { ...state.loginData, password: action.payload } }
 
-    case 'STORE_USER':  
+    case 'STORE_USER':
       console.log(action.payload)
-      return {...state, user: action.payload, loginData: { username: '', password: '' }}
+      return { ...state, user: action.payload, loginData: { username: '', password: '' } }
 
     case 'UPDATED_STORAGE':
       return { ...state, save: false };
@@ -122,8 +122,10 @@ const App = () => {
         console.log("Error", error)
       }
     }
-    getExamData()
-  }, []);
+    if (data.user !== null) {
+      getExamData()
+    }
+  }, [data.user]);
 
   // get questions and answer options from selected exam from the server
   useEffect(() => {
@@ -146,18 +148,22 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Login loginData={data.loginData} dispatch={dispatch} />} />
 
-        <Route path='/exams' element={<div>
-          <Header />
-          <Exams exams={data.exams} dispatch={dispatch} />
-          {data.selectedExamSaved === true && <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
-        </div>} />
-        <Route path='/home' element={<div>
-          <Header />
-          <Home />
-        </div>
-        } />
+        <Route path='/' element={data.user ? <Navigate replace to='/home' /> : <Login loginData={data.loginData} dispatch={dispatch} />} />
+
+        <Route path='/home' element={data.user ?
+          <div>
+            <Header />
+            <Home />
+          </div> : <Navigate replace to='/' />} />
+
+        <Route path='/exams' element={data.user ?
+          <div>
+            <Header />
+            <Exams exams={data.exams} dispatch={dispatch} />
+            {data.selectedExamSaved === true && <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
+          </div> : <Navigate replace to='/' />} />
+          
       </Routes>
     </Router>
 
