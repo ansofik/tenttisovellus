@@ -11,11 +11,11 @@ loginRouter.post('/', async (req, res, next) => {
   let existingUser = null;
   let passwordMatches = false;
   try {
-    let result = await pool.query('SELECT account_id, username, password FROM account WHERE username=$1', [username])
+    let result = await pool.query('SELECT account_id, username, password, admin FROM account WHERE username=$1', [username])
     console.log('result', result)
     if (result.rowCount > 0) {
       result = result.rows[0]
-      existingUser = { id: result.account_id, username: result.username, password: result.password }
+      existingUser = { id: result.account_id, username: result.username, password: result.password, admin: result.admin}
       passwordMatches = await bcrypt.compare(password, existingUser.password)
     }
   } catch (err) {
@@ -44,6 +44,7 @@ loginRouter.post('/', async (req, res, next) => {
     data: {
       userId: existingUser.id,
       username: existingUser.username,
+      admin: existingUser.admin,
       token: token
     }
   })

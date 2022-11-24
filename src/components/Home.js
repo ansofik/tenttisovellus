@@ -1,9 +1,11 @@
-const Home = () => {
-    return (
-      <div>
-        <h1>Etusivu</h1>
-      </div>
-    )
-  }
+const Home = ({ user }) => {
+  console.log('home',user)
+  return (
+    <div>
+      <h1>Etusivu</h1>
+      <div>Kirjautuneena käyttäjänä <i>{user.username}</i></div>
+    </div>
+  )
+}
 
-  export default Home;
+export default Home;

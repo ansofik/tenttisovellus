@@ -73,9 +73,9 @@ examsRouter.put('/:examId', isAdmin, async (req, res) => {
     res.status(400).end()
     return;
   }
-  const values = [req.body.name, req.body.published, examId]
+  const values = [req.body.name, examId]
   try {
-    const result = await pool.query("UPDATE exam SET name=$1, published=$2 WHERE exam_id=$3", values)
+    const result = await pool.query("UPDATE exam SET name=$1 WHERE exam_id=$2", values)
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {

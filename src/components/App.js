@@ -4,6 +4,7 @@ import Header from './Header';
 import Home from './Home';
 import Exams from './Exams';
 import Exam from './Exam';
+import EditExam from './EditExam';
 import { useReducer, useEffect } from 'react';
 import axios from 'axios'
 import {
@@ -18,7 +19,7 @@ function reducer(state, action) {
       console.log("changing exam name")
       return {
         ...state,
-        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? { ...exam, name: action.payload.name } : exam)),
+        exams: state.exams.map(exam => exam.id == state.selectedExamId ? { ...exam, name: action.payload } : exam),
         save: true
       };
 
@@ -154,16 +155,18 @@ const App = () => {
         <Route path='/home' element={data.user ?
           <div>
             <Header />
-            <Home />
+            <Home user={data.user} />
           </div> : <Navigate replace to='/' />} />
 
         <Route path='/exams' element={data.user ?
           <div>
             <Header />
             <Exams exams={data.exams} dispatch={dispatch} />
-            {data.selectedExamSaved === true && <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
+            {data.selectedExamSaved === true && (data.user.admin ?
+              <EditExam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />
+               : <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />)}
           </div> : <Navigate replace to='/' />} />
-          
+
       </Routes>
     </Router>
 

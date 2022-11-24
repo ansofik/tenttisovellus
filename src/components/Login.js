@@ -9,8 +9,9 @@ const Login = ({ loginData, dispatch }) => {
       const response = await axios.post('http://localhost:8080/login',
         { username: loginData.username, password: loginData.password })
       console.log('response', response)
-      const user = response.data
+      const user = response.data.data
       dispatch({ type: 'STORE_USER', payload: user })
+      localStorage.setItem('loggedInUser', JSON.stringify(user))
     } catch (err) {
       console.log(err);
     }
