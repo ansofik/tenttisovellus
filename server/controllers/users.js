@@ -7,13 +7,13 @@ const isAdmin = require('../middlewares/isAdmin')
 
 // create new user
 usersRouter.post('/', async (req, res, next) => {
-  const { email, name, password } = req.body
+  const { username, password } = req.body
   const saltRounds = 10
   let userId;
   try {
     const passwordHash = await bcrypt.hash(password, saltRounds)
-    const values = [email, passwordHash, name, false]
-    const result = await pool.query('INSERT INTO account (email, password, name, admin) VALUES ($1,$2,$3,$4) RETURNING account_id id', values)
+    const values = [username, passwordHash, false]
+    const result = await pool.query('INSERT INTO account (username, password, admin) VALUES ($1,$2,$3) RETURNING account_id id', values)
     userId = result.rows[0].id
   } catch (err) {
     return next(err);
@@ -22,7 +22,7 @@ usersRouter.post('/', async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: userId, email: email },
+      { userId: userId, username: username },
       'secretkeyappearshere',
       { expiresIn: '1h' }
     )
@@ -34,7 +34,7 @@ usersRouter.post('/', async (req, res, next) => {
     success: true,
     data: {
       userId: userId,
-      email: email,
+      username: username,
       token: token
     }
   })
@@ -43,7 +43,7 @@ usersRouter.post('/', async (req, res, next) => {
 usersRouter.get('/', isAdmin, async (req, res) => {
   console.log('get request for users')
   try {
-    const result = await pool.query('SELECT account_id, email, name FROM account')
+    const result = await pool.query('SELECT account_id, username, name FROM account')
     res.send(result.rows)
   } catch (err) {
     console.log(err)
@@ -59,7 +59,7 @@ usersRouter.get('/:userId', async (req, res) => {
     return res.status(403).end()
   }
   try {
-    const result = await pool.query('SELECT account_id, email, name FROM account WHERE account_id =$1', [userId])
+    const result = await pool.query('SELECT account_id, username, name FROM account WHERE account_id =$1', [userId])
     if (result.rowCount > 0) {
       res.send(result.rows[0])
     } else {
@@ -81,7 +81,7 @@ usersRouter.put('/:userId', async (req, res) => {
   const b = req.body;
   const values = [b.username, b.name, b.password, userId]
   try {
-    const result = await pool.query("UPDATE account SET email=$1, name=$2, password=$3 WHERE account_id=$4", values)
+    const result = await pool.query("UPDATE account SET username=$1, name=$2, password=$3 WHERE account_id=$4", values)
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {

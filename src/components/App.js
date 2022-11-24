@@ -1,4 +1,5 @@
 import './App.css';
+import Login from './Login';
 import Header from './Header';
 import Home from './Home';
 import Exams from './Exams';
@@ -72,14 +73,26 @@ function reducer(state, action) {
     case 'SELECT_EXAM':
       console.log('select exam');
       console.log(action.payload);
-      return { ...state, selectedExamId: action.payload, selectedExamSaved: false}
+      return { ...state, selectedExamId: action.payload, selectedExamSaved: false }
 
     case 'STORE_EXAM':
       console.log('store exam loaded from server');
       console.log(action.payload);
-      return { ...state,
-              exams: state.exams.map(exam => exam.id == action.payload.id ? action.payload : exam),
-              selectedExamSaved: true}
+      return {
+        ...state,
+        exams: state.exams.map(exam => exam.id == action.payload.id ? action.payload : exam),
+        selectedExamSaved: true
+      }
+
+    case 'USERNAME_CHANGED':
+      return { ...state, loginData: { ...state.loginData, username: action.payload } }
+
+    case 'PASSWORD_CHANGED':
+      return { ...state, loginData: { ...state.loginData, password: action.payload } }
+
+    case 'STORE_USER':  
+      console.log(action.payload)
+      return {...state, user: action.payload, loginData: { username: '', password: '' }}
 
     case 'UPDATED_STORAGE':
       return { ...state, save: false };
@@ -89,9 +102,14 @@ function reducer(state, action) {
   }
 }
 
+
+
+
+
+
 const App = () => {
 
-  const [data, dispatch] = useReducer(reducer, { initialized: false, selectedExamId: null});
+  const [data, dispatch] = useReducer(reducer, { user: null, loginData: { username: '', password: '' }, initialized: false, selectedExamId: null });
 
   // get exam titles from the server
   useEffect(() => {
@@ -115,7 +133,7 @@ const App = () => {
         console.log(typeof data.selectedExamId)
         const response = await axios(`http://localhost:8080/exams/${data.selectedExamId}/`)
         console.log("response for get questions", response)
-        dispatch({ type: 'STORE_EXAM', payload: response.data}) 
+        dispatch({ type: 'STORE_EXAM', payload: response.data })
       } catch (err) {
         console.log("could not get exam questions and options", err)
       }
@@ -127,15 +145,19 @@ const App = () => {
 
   return (
     <Router>
-      <Header />
-
       <Routes>
+        <Route path='/' element={<Login loginData={data.loginData} dispatch={dispatch} />} />
+
         <Route path='/exams' element={<div>
+          <Header />
           <Exams exams={data.exams} dispatch={dispatch} />
-          {console.log('exams', data.exams)}
           {data.selectedExamSaved === true && <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
         </div>} />
-        <Route path='/' element={<Home />} />
+        <Route path='/home' element={<div>
+          <Header />
+          <Home />
+        </div>
+        } />
       </Routes>
     </Router>
 
