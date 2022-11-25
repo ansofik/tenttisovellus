@@ -85,15 +85,9 @@ function reducer(state, action) {
         selectedExamSaved: true
       }
 
-    case 'USERNAME_CHANGED':
-      return { ...state, loginData: { ...state.loginData, username: action.payload } }
-
-    case 'PASSWORD_CHANGED':
-      return { ...state, loginData: { ...state.loginData, password: action.payload } }
-
     case 'STORE_USER':
       console.log(action.payload)
-      return { ...state, user: action.payload, loginData: { username: '', password: '' } }
+      return { ...state, user: action.payload }
 
     case 'UPDATED_STORAGE':
       return { ...state, save: false };
@@ -103,14 +97,9 @@ function reducer(state, action) {
   }
 }
 
-
-
-
-
-
 const App = () => {
 
-  const [data, dispatch] = useReducer(reducer, { user: null, loginData: { username: '', password: '' }, initialized: false, selectedExamId: null });
+  const [data, dispatch] = useReducer(reducer, { user: null, initialized: false, selectedExamId: null });
 
   // get exam titles from the server
   useEffect(() => {
@@ -150,7 +139,7 @@ const App = () => {
     <Router>
       <Routes>
 
-        <Route path='/' element={data.user ? <Navigate replace to='/home' /> : <Login loginData={data.loginData} dispatch={dispatch} />} />
+        <Route path='/' element={data.user ? <Navigate replace to='/home' /> : <Login /* loginData={data.loginData} */ dispatch={dispatch} />} />
 
         <Route path='/home' element={data.user ?
           <div>

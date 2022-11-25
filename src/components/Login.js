@@ -1,6 +1,9 @@
 import axios from "axios"
+import { useState } from 'react'
 
-const Login = ({ loginData, dispatch }) => {
+const Login = ({ dispatch }) => {
+
+  const [loginData, setLoginData] = useState({ username: '', password: '' })
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -15,6 +18,7 @@ const Login = ({ loginData, dispatch }) => {
     } catch (err) {
       console.log(err);
     }
+    setLoginData({ username: '', password: '' })
   }
 
   return (
@@ -25,21 +29,13 @@ const Login = ({ loginData, dispatch }) => {
         <div>
           Käyttäjätunnus
           <input type='text' value={loginData.username} onChange={
-            event => {
-              dispatch({
-                type: 'USERNAME_CHANGED',
-                payload: event.target.value
-              })
-            }} />
+            event => setLoginData({username: event.target.value, password: loginData.password})
+            } />
         </div>
         <div>
           Salasana <input type='text' value={loginData.password} onChange={
-            event => {
-              dispatch({
-                type: 'PASSWORD_CHANGED',
-                payload: event.target.value
-              })
-            }} />
+            event => setLoginData({username: loginData.username, password: event.target.value})
+          } />
         </div>
         <button type='submit'>Kirjaudu sisään</button>
       </form>
