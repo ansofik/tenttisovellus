@@ -71,20 +71,15 @@ function reducer(state, action) {
 
       return { ...state, exams: action.payload, initialized: true, save: false };
 
-    case 'SELECT_EXAM':
+    case 'SELECTED_EXAM':
       console.log('select exam');
-      console.log(action.payload);
-      return { ...state, selectedExamId: action.payload, selectedExamSaved: false }
-
-    case 'STORE_EXAM':
-      console.log('store exam loaded from server');
       console.log(action.payload);
       return {
         ...state,
         exams: state.exams.map(exam => exam.id == action.payload.id ? action.payload : exam),
-        selectedExamSaved: true
+        selectedExamId: action.payload.id
       }
-
+      
     case 'STORE_USER':
       console.log(action.payload)
       return { ...state, user: action.payload }
@@ -104,8 +99,13 @@ const App = () => {
   // get exam titles from the server
   useEffect(() => {
     const getExamData = async () => {
+      console.log('token',JSON.parse(localStorage.getItem('loggedInUser')).token)
       try {
-        const response = await axios('http://localhost:8080/exams')
+        const response = await axios('http://localhost:8080/exams', {
+          headers: {
+            Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}`
+          }
+        })
         console.log("response", response);
         dispatch({ type: 'INIT_DATA', payload: response.data });
       } catch (error) {
@@ -117,29 +117,12 @@ const App = () => {
     }
   }, [data.user]);
 
-  // get questions and answer options from selected exam from the server
-  useEffect(() => {
-    const getQuestions = async () => {
-      console.log("loading questions")
-      try {
-        console.log(typeof data.selectedExamId)
-        const response = await axios(`http://localhost:8080/exams/${data.selectedExamId}/`)
-        console.log("response for get questions", response)
-        dispatch({ type: 'STORE_EXAM', payload: response.data })
-      } catch (err) {
-        console.log("could not get exam questions and options", err)
-      }
-    }
-    if (data.selectedExamId !== null) {
-      getQuestions()
-    }
-  }, [data.selectedExamId])
-
   return (
     <Router>
       <Routes>
+      {console.log('rendering.....')}
 
-        <Route path='/' element={data.user ? <Navigate replace to='/home' /> : <Login /* loginData={data.loginData} */ dispatch={dispatch} />} />
+        <Route path='/' element={data.user ? <Navigate replace to='/home' /> : <Login dispatch={dispatch} />} />
 
         <Route path='/home' element={data.user ?
           <div>
@@ -151,7 +134,7 @@ const App = () => {
           <div>
             <Header />
             <Exams exams={data.exams} dispatch={dispatch} />
-            {data.selectedExamSaved === true && (data.user.admin ?
+            {data.selectedExamId !== null && (data.user.admin ?
               <EditExam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />
                : <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />)}
           </div> : <Navigate replace to='/' />} />

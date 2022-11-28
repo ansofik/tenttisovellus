@@ -1,5 +1,20 @@
+import axios from 'axios';
 
 const Exams = ({ exams, dispatch }) => {
+
+  const selectExam = async (selectedExamId) => {
+    console.log("loading questions")
+      try {
+        const response = await axios(`http://localhost:8080/exams/${selectedExamId}/`,
+         {headers : {
+          Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}`
+      }})
+        console.log("response for get questions", response)
+        dispatch({ type: 'SELECTED_EXAM', payload: response.data })
+      } catch (err) {
+        console.log("could not get exam questions and options", err)
+      }
+  }
 
   return (
     <div>
@@ -7,11 +22,7 @@ const Exams = ({ exams, dispatch }) => {
       <ul className="testMenu">
         {exams.map(exam =>
           <li key={exam.id}>
-            <button className='examButton' type='button' onClick={e =>
-              dispatch({
-                type: 'SELECT_EXAM',
-                payload: exam.id
-              })}>
+            <button className='examButton' type='button' onClick={() => selectExam(exam.id)}>
               {exam.name}
             </button>
           </li>
