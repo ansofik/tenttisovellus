@@ -4,11 +4,12 @@ const optionsRouter = require('express').Router()
 optionsRouter.put('/:optionId', async (req, res) => {
   console.log("put request to update answer option")
   const optionId = Number(req.params.optionId)
-  if (isNaN(OpId)) {
+  if (isNaN(optionId)) {
     res.status(400).end()
     return;
   }
-  const values = [req.body.text, req.body.correct, optionId]
+  const values = [req.body.optionText, req.body.correct, optionId]
+  
   try {
     const result = await pool.query("UPDATE option SET option_text=$1, correct=$2 WHERE option_id=$3", values)
     if (result.rowCount > 0) {

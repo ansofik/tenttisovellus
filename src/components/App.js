@@ -4,7 +4,7 @@ import Header from './Header';
 import Home from './Home';
 import Exams from './Exams';
 import Exam from './Exam';
-import EditExam from './EditExam';
+import EditExam from './admin/EditExam';
 import { useReducer, useEffect } from 'react';
 import axios from 'axios'
 import {
@@ -19,30 +19,31 @@ function reducer(state, action) {
       console.log("changing exam name")
       return {
         ...state,
-        exams: state.exams.map(exam => exam.id == state.selectedExamId ? { ...exam, name: action.payload } : exam),
-        save: true
+        exams: state.exams.map(exam => exam.id == state.selectedExamId ? { ...exam, name: action.payload } : exam)
       };
 
     case 'QUESTION_CHANGED':
+      console.log('changing question');
+      
       return {
         ...state,
-        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
-          ...exam, questions: exam.questions.map((question, i) => (i === action.payload.questionIndex ? {
-            ...question, question: action.payload.question
+        exams: state.exams.map(exam => (exam.id == state.selectedExamId ? {
+          ...exam, questions: exam.questions.map(question => (question.questionId === action.payload.questionId ? {
+            ...question, questionText: action.payload.text
           } : question))
-        } : exam)),
-        save: true
+        } : exam))
       };
 
-    case 'ANSWER_CHANGED':
+    case 'OPTION_CHANGED':
       return {
         ...state,
-        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
-          ...exam, questions: exam.questions.map((question, i) => (i === action.payload.questionIndex ? {
-            ...question, answers: question.answers.map((answer, i) => (i === action.payload.answerIndex ? action.payload.answer : answer))
+        exams: state.exams.map(exam => (exam.id == state.selectedExamId ? {
+          ...exam, questions: exam.questions.map(question => (question.questionId === action.payload.questionId ? {
+            ...question, options: question.options.map(option => (option.optionId === action.payload.optionId ? {
+               ...option, optionText: action.payload.text }
+                : option))
           } : question))
-        } : exam)),
-        save: true
+        } : exam))
       };
 
     case 'DELETE_QUESTION':

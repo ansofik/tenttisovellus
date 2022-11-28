@@ -1,6 +1,6 @@
 import axios from 'axios';
-import './App.css';
-import Question from './Question';
+import '../App.css';
+import EditQuestion from './EditQuestion';
 
 const EditExam = ({ exam, dispatch }) => {
 
@@ -28,7 +28,7 @@ const EditExam = ({ exam, dispatch }) => {
       <label htmlFor="name">Tentin nimi: </label>
       <input type="text" id="name" onChange={handleEdit} defaultValue={exam.name} />
       <div>
-        {exam.questions.map(question => <Question question={question} dispatch={dispatch} />)}
+        {exam.questions.map(question => <EditQuestion question={question} dispatch={dispatch} key={question.questionId}/>)}
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ const Question = ({ question, dispatch }) => {
             }} value={props.question.question} />
           </div> */}
         <div>
-          {question.options.map(option => <Option option={option} dispatch={dispatch} />)}
+          {question.options.map(option => <Option option={option} dispatch={dispatch} key={option.optionId}/>)}
         </div>
       </div>
       </form>

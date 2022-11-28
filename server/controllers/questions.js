@@ -9,7 +9,7 @@ questionsRouter.put('/:questionId', async (req, res) => {
     return;
   }
   try {
-    const result = await pool.query("UPDATE question SET text=$1 WHERE question_id=$2", [req.body.text, questionId])
+    const result = await pool.query("UPDATE question SET question_text=$1 WHERE question_id=$2", [req.body.questionText, questionId])
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {
