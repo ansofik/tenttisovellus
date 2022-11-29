@@ -7,31 +7,12 @@ const config = {
   }
 }
 
-const updateName = async (id, name) => {
-  console.log('updating exam name');
-  try {
-    await axios.put(`${url}/exams/${id}/`, { name: name }, config)
-  } catch (err) {
-    console.log(err)
-  }
-}
+const updateName = (id, name) => axios.put(`${url}/exams/${id}/`, { name: name }, config)
 
-const updateQuestion = async (id, text) => {
-  try {
-    await axios.put(`${url}/questions/${id}/`, { questionText: text }, config)
-  } catch (err) {
-    console.log(err)
-  }
-}
+const updateQuestion = (id, text) => axios.put(`${url}/questions/${id}/`, { questionText: text }, config)
 
-const updateOption = async (id, text, correct) => {
-  try {
-    await axios.put(`${url}/options/${id}/`, { optionText: text, correct: correct }, config)
-  } catch (err) {
-    console.log(err)
-  }
-}
-
+const updateOption = (id, text, correct) => axios.put(`${url}/options/${id}/`, { optionText: text, correct: correct }, config)
+  
 export default {
   updateName,
   updateQuestion,
