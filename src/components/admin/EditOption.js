@@ -1,19 +1,10 @@
 import axios from "axios"
+import examService from '../../services/examService'
 
 const EditOption = ({ option, dispatch, questionId }) => {
 
   const handleEdit = async event => {
-    console.log(event.target.value)
-    try {
-      await axios.put(`http://localhost:8080/options/${option.optionId}/`, { optionText: event.target.value, correct: option.correct },
-        {
-          headers: {
-            Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}`
-          }
-        })
-    } catch (err) {
-      console.log(err)
-    }
+    examService.updateOption(option.optionId, event.target.value, option.correct)
     dispatch({
       type: 'OPTION_CHANGED',
       payload: {
@@ -23,8 +14,7 @@ const EditOption = ({ option, dispatch, questionId }) => {
       }
     })
   }
-
-  console.log("editing option", option)
+  
   return (
     <div className="ans">
       <input type="checkbox"/>
