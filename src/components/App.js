@@ -6,7 +6,7 @@ import Exams from './Exams';
 import Exam from './Exam';
 import EditExam from './admin/EditExam';
 import { useReducer, useEffect } from 'react';
-import axios from 'axios'
+import examService from '../services/examService';
 import {
   BrowserRouter as Router,
   Routes, Route, Navigate
@@ -100,15 +100,9 @@ const App = () => {
   // get exam titles from the server
   useEffect(() => {
     const getExamData = async () => {
-      console.log('token',JSON.parse(localStorage.getItem('loggedInUser')).token)
       try {
-        const response = await axios('http://localhost:8080/exams', {
-          headers: {
-            Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}`
-          }
-        })
-        console.log("response", response);
-        dispatch({ type: 'INIT_DATA', payload: response.data });
+        const exams = await examService.getExams()
+        dispatch({ type: 'INIT_DATA', payload: exams });
       } catch (error) {
         console.log("Error", error)
       }

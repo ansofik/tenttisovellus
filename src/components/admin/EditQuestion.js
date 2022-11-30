@@ -1,4 +1,3 @@
-import axios from "axios"
 import EditOption from './EditOption'
 import examService from '../../services/examService'
 

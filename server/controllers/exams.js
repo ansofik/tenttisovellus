@@ -56,7 +56,7 @@ examsRouter.get('/:examId', async (req, res) => {
 
 examsRouter.post('/', isAdmin, async (req, res) => {
   console.log("post request for new exam")
-  const values = [req.body.name, req.body.published]
+  const values = ['', false]
   try {
     const result = await pool.query("INSERT INTO exam (name, published) VALUES ($1,$2) RETURNING exam_id", values)
     res.status(201).send(result.rows[0].exam_id)
@@ -119,7 +119,7 @@ examsRouter.post('/:examId/questions', isAdmin, async (req, res) => {
     return;
   }
   try {
-    const result = await pool.query("INSERT INTO question (exam_id, text) VALUES ($1,$2) RETURNING question_id", [examId, req.body.text])
+    const result = await pool.query("INSERT INTO question (exam_id, text) VALUES ($1,$2) RETURNING question_id", [examId, ''])
     res.status(201).send(result.rows[0].question_id)
   } catch (err) {
     res.status(500).send(err)

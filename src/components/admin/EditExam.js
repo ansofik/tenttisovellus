@@ -1,4 +1,3 @@
-import axios from 'axios';
 import '../App.css';
 import EditQuestion from './EditQuestion';
 import examService from '../../services/examService'
@@ -16,6 +15,8 @@ const EditExam = ({ exam, dispatch }) => {
       console.log(err)
     }
   }
+
+  console.log('editing exam', exam)
 
   return (
     <div>

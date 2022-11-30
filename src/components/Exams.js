@@ -1,16 +1,12 @@
 import axios from 'axios';
+import examService from '../services/examService'
 
 const Exams = ({ exams, dispatch }) => {
 
-  const selectExam = async (selectedExamId) => {
-    console.log("loading questions")
+  const selectExam = async (id) => {
       try {
-        const response = await axios(`http://localhost:8080/exams/${selectedExamId}/`,
-         {headers : {
-          Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}`
-      }})
-        console.log("response for get questions", response)
-        dispatch({ type: 'SELECTED_EXAM', payload: response.data })
+        const exam = await examService.getExam(id)
+        dispatch({ type: 'SELECTED_EXAM', payload: exam })
       } catch (err) {
         console.log("could not get exam questions and options", err)
       }
