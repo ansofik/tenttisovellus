@@ -5,14 +5,27 @@ import examService from '../../services/examService'
 const EditExam = ({ exam, dispatch }) => {
 
   const handleEdit = async event => {
+    const name = event.target.value
     try {
-      await examService.updateName(exam.id, event.target.value)
+      await examService.updateExamName(exam.id, name)
       dispatch({
         type: 'EXAM_NAME_CHANGED',
-        payload: event.target.value
+        payload: name
       })
     } catch (err) {
       console.log(err)
+    }
+  }
+
+  const handleClick = async () => {
+    try {
+      const questionId = await examService.addQuestion(exam.id)
+      dispatch({
+        type: 'ADD_QUESTION',
+        payload: questionId
+      })
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -21,10 +34,11 @@ const EditExam = ({ exam, dispatch }) => {
   return (
     <div>
       <label htmlFor="name">Tentin nimi: </label>
-      <input type="text" id="name" onChange={handleEdit} defaultValue={exam.name} />
+      <input type="text" id="name" value={exam.name} onChange={handleEdit} />
       <div>
         {exam.questions.map(question => <EditQuestion question={question} dispatch={dispatch} key={question.questionId} />)}
       </div>
+      <button type="button" onClick={handleClick} >lisää kysymys</button>
     </div>
   );
 }

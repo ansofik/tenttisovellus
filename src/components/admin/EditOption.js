@@ -1,17 +1,17 @@
-import axios from "axios"
 import examService from '../../services/examService'
 
 const EditOption = ({ option, dispatch, questionId }) => {
 
   const handleEdit = async event => {
+    const text = event.target.value
     try {
-      examService.updateOption(option.optionId, event.target.value, option.correct)
+      examService.updateOption(option.optionId, text, option.correct)
       dispatch({
         type: 'OPTION_CHANGED',
         payload: {
           questionId: questionId,
           optionId: option.optionId,
-          text: event.target.value
+          text: text
         }
       })
     } catch (err) {
@@ -22,7 +22,7 @@ const EditOption = ({ option, dispatch, questionId }) => {
   return (
     <div className="ans">
       <input type="checkbox" />
-      <input type="text" onChange={handleEdit} defaultValue={option.optionText} />
+      <input type="text" value={option.optionText} onChange={handleEdit} />
     </div>
   );
 }

@@ -113,13 +113,14 @@ examsRouter.delete('/:examId', isAdmin, async (req, res) => {
 })
 
 examsRouter.post('/:examId/questions', isAdmin, async (req, res) => {
+  console.log('post request for adding a question');
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
     res.status(400).end()
     return;
   }
   try {
-    const result = await pool.query("INSERT INTO question (exam_id, text) VALUES ($1,$2) RETURNING question_id", [examId, ''])
+    const result = await pool.query("INSERT INTO question (exam_id, question_text) VALUES ($1,$2) RETURNING question_id", [examId, req.body.text])
     res.status(201).send(result.rows[0].question_id)
   } catch (err) {
     res.status(500).send(err)

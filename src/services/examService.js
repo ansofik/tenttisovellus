@@ -25,10 +25,10 @@ const addExam = async () => {
   return response.data
 }
 
-const updateName = (id, name) => axios.put(`${url}/exams/${id}/`, { name: name }, config)
+const updateExamName = (id, name) => axios.put(`${url}/exams/${id}/`, { name: name }, config)
 
-const addQuestion = () => async () => {
-  const response = await axios.post(`${url}/exams/questions`, config)
+const addQuestion = async (id) => {
+  const response = await axios.post(`${url}/exams/${id}/questions`, { text: ''}, config)
   console.log('response', response);
   return response.data
 }
@@ -43,14 +43,15 @@ const addOption = async () => {
 
 const updateOption = (id, text, correct) => axios.put(`${url}/options/${id}/`, { optionText: text, correct: correct }, config)
 
-
-export default {
+const examService = {
   getExams,
   getExam,
   addExam,
-  updateName,
+  updateExamName,
   updateQuestion,
   addQuestion,
   updateOption,
   addOption
 }
+
+export default examService

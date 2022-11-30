@@ -1,4 +1,4 @@
-import axios from 'axios';
+
 import examService from '../services/examService'
 
 const Exams = ({ exams, dispatch }) => {

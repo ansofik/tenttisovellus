@@ -4,13 +4,14 @@ import examService from '../../services/examService'
 const EditQuestion = ({ question, dispatch }) => {
 
   const handleEdit = async event => {
+    const text = event.target.value
     try {
-      await examService.updateQuestion(question.questionId, event.target.value)
+      await examService.updateQuestion(question.questionId, text)
       dispatch({
         type: 'QUESTION_CHANGED',
         payload: {
           questionId: question.questionId,
-          text: event.target.value
+          text: text
         }
       })
     } catch (err) {
@@ -20,7 +21,7 @@ const EditQuestion = ({ question, dispatch }) => {
 
   return (
     <div>
-      <input type="text" onChange={handleEdit} defaultValue={question.questionText} />
+      <input type="text" value={question.questionText} onChange={handleEdit}  />
       <div>
         {question.options.map(option => <EditOption option={option} dispatch={dispatch} key={option.optionId} questionId={question.questionId} />)}
       </div>

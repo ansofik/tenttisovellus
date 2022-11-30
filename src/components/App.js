@@ -16,7 +16,7 @@ function reducer(state, action) {
   switch (action.type) {
 
     case 'EXAM_NAME_CHANGED':
-      console.log("changing exam name")
+      console.log("changing exam name to", action.payload)
       return {
         ...state,
         exams: state.exams.map(exam => exam.id == state.selectedExamId ? { ...exam, name: action.payload } : exam)
@@ -46,23 +46,21 @@ function reducer(state, action) {
         } : exam))
       };
 
-    case 'DELETE_QUESTION':
+    /* case 'DELETE_QUESTION':
       return {
         ...state,
-        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
+        exams: state.exams.map(exam => (i == action.payload.examIndex ? {
           ...exam, questions: exam.questions.filter((question, i) => i != action.payload.questionIndex)
         } : exam)),
         save: true
-      };
+      }; */
 
     case 'ADD_QUESTION': {
-      const newQuestion = { question: "q", answers: ["a", "a"], indexOfCorrectAns: 0 };
       return {
         ...state,
-        exams: state.exams.map((exam, i) => (i == action.payload.examIndex ? {
-          ...exam, questions: [...exam.questions.slice(0, action.payload.questionIndex + 1), newQuestion, ...exam.questions.slice(action.payload.questionIndex + 1)]
-        } : exam)),
-        save: true
+        exams: state.exams.map(exam => (exam.id == state.selectedExamId ? {
+          ...exam, questions: [...exam.questions, {questionId: action.payload, questionText: '', options: []}]
+        } : exam))
       };
     }
 
