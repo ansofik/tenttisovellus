@@ -25,7 +25,7 @@ examsRouter.get('/:examId', async (req, res) => {
   }
 
   const query = {
-    text: 'SELECT e.exam_id, e.name, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e JOIN question q ON e.exam_id = q.exam_id JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1',
+    text: 'SELECT e.exam_id, e.name, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e LEFT JOIN question q ON e.exam_id = q.exam_id LEFT JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1',
     values: [examId]
   }
   try {
@@ -36,13 +36,19 @@ examsRouter.get('/:examId', async (req, res) => {
       return;
     }
     const questionList = result.rows.reduce((prev, curr) => {
-      const match = prev.find(q => q.questionId === curr.question_id)
-      const newOpt = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct }
-      if (match) {
-        match.options.push(newOpt)
-      } else {
-        prev.push({ questionId: curr.question_id, questionText: curr.question_text, options: [newOpt] })
+      if (curr.question_id == null) {
+        return prev
       }
+      let question = prev.find(q => q.questionId === curr.question_id)
+      if (!question) {
+        question = { questionId: curr.question_id, questionText: curr.question_text, options: []}
+        prev.push(question)
+      }
+      if (curr.option_id == null) {
+        return prev
+      }
+      const newOption = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct }
+      question.options.push(newOption)
       return prev
     }, [])
 

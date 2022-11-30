@@ -22,7 +22,7 @@ const EditExam = ({ exam, dispatch }) => {
       const questionId = await examService.addQuestion(exam.id)
       dispatch({
         type: 'ADD_QUESTION',
-        payload: questionId
+        payload: questionId.toString()
       })
     } catch (err) {
       console.log(err);

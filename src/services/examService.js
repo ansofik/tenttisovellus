@@ -8,13 +8,13 @@ const config = {
 }
 
 const getExams = async () => {
-  const response = await axios(`${url}/exams`, config)
+  const response = await axios.get(`${url}/exams`, config)
   console.log('response', response);
   return response.data
 }
 
 const getExam = async (id) => {
-  const response = await axios(`${url}/exams/${id}`, config)
+  const response = await axios.get(`${url}/exams/${id}`, config)
   console.log('response', response);
   return response.data
 }
@@ -33,6 +33,8 @@ const addQuestion = async (id) => {
   return response.data
 }
 
+const deleteQuestion = (id) => axios.delete(`${url}/questions/${id}/`, config)
+
 const updateQuestion = (id, text) => axios.put(`${url}/questions/${id}/`, { questionText: text }, config)
 
 const addOption = async () => {
@@ -50,6 +52,7 @@ const examService = {
   updateExamName,
   updateQuestion,
   addQuestion,
+  deleteQuestion,
   updateOption,
   addOption
 }
