@@ -19,9 +19,23 @@ const EditQuestion = ({ question, dispatch }) => {
     }
   }
 
+  const handleClick = async () => {
+    try {
+      await examService.deleteQuestion(question.questionId)
+      dispatch({
+        type: 'DELETE_QUESTION',
+        payload: question.questionId
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   return (
     <div>
       <input type="text" value={question.questionText} onChange={handleEdit}  />
+      <button type="button" onClick={handleClick}>poista</button>
       <div>
         {question.options.map(option => <EditOption option={option} dispatch={dispatch} key={option.optionId} questionId={question.questionId} />)}
       </div>

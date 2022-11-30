@@ -46,14 +46,13 @@ function reducer(state, action) {
         } : exam))
       };
 
-    /* case 'DELETE_QUESTION':
+    case 'DELETE_QUESTION':
       return {
         ...state,
-        exams: state.exams.map(exam => (i == action.payload.examIndex ? {
-          ...exam, questions: exam.questions.filter((question, i) => i != action.payload.questionIndex)
-        } : exam)),
-        save: true
-      }; */
+        exams: state.exams.map(exam => (exam.id == state.selectedExamId ? {
+          ...exam, questions: exam.questions.filter(question => question.questionId != action.payload)
+        } : exam))
+      };
 
     case 'ADD_QUESTION': {
       return {
