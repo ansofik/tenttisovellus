@@ -19,7 +19,7 @@ const EditQuestion = ({ question, dispatch }) => {
     }
   }
 
-  const handleClick = async () => {
+  const handleDelete = async () => {
     try {
       await examService.deleteQuestion(question.questionId)
       dispatch({
@@ -31,11 +31,26 @@ const EditQuestion = ({ question, dispatch }) => {
     }
   }
 
+  const handleAdd = async () => {
+    try {
+      const optionId = await examService.addOption(question.questionId)
+      dispatch({
+        type: 'ADD_OPTION',
+        payload: {
+          questionId: question.questionId,
+          optionId: optionId.toString()
+        } 
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <div>
       <input type="text" value={question.questionText} onChange={handleEdit}  />
-      <button type="button" onClick={handleClick}>poista</button>
+      <button type="button" onClick={handleDelete}>poista</button>
+      <button type="button" onClick={handleAdd} >+</button>
       <div>
         {question.options.map(option => <EditOption option={option} dispatch={dispatch} key={option.optionId} questionId={question.questionId} />)}
       </div>

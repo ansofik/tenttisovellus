@@ -11,7 +11,8 @@ const EditOption = ({ option, dispatch, questionId }) => {
         payload: {
           questionId: questionId,
           optionId: option.optionId,
-          text: text
+          text: text,
+          correct: option.correct
         }
       })
     } catch (err) {
@@ -19,10 +20,44 @@ const EditOption = ({ option, dispatch, questionId }) => {
     }
   }
 
+  const handleDelete = async () => {
+    try {
+      await examService.deleteOption(option.optionId)
+      dispatch({
+        type: 'DELETE_OPTION',
+        payload: {
+          questionId: questionId,
+          optionId: option.optionId
+        } 
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const toggleCorrect = async () => {
+    try {
+      examService.updateOption(option.optionId, option.optionText, !option.correct)
+      dispatch({
+        type: 'OPTION_CHANGED',
+        payload: {
+          questionId: questionId,
+          optionId: option.optionId,
+          text: option.optionText,
+          correct: !option.correct
+        }
+      })
+    } catch (err) {
+      console.log(err)
+    }
+
+  }
+
   return (
     <div className="ans">
-      <input type="checkbox" />
+      <input type="checkbox" checked={option.correct} onChange={toggleCorrect} />
       <input type="text" value={option.optionText} onChange={handleEdit} />
+      <button type="button" onClick={handleDelete}>-</button>
     </div>
   );
 }

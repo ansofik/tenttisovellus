@@ -36,7 +36,7 @@ examsRouter.get('/:examId', async (req, res) => {
       return;
     }
     const questionList = result.rows.reduce((prev, curr) => {
-      if (curr.question_id == null) {
+      if (curr.question_id === null) {
         return prev
       }
       let question = prev.find(q => q.questionId === curr.question_id)
@@ -44,7 +44,7 @@ examsRouter.get('/:examId', async (req, res) => {
         question = { questionId: curr.question_id, questionText: curr.question_text, options: []}
         prev.push(question)
       }
-      if (curr.option_id == null) {
+      if (curr.option_id === null) {
         return prev
       }
       const newOption = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct }
@@ -62,7 +62,7 @@ examsRouter.get('/:examId', async (req, res) => {
 
 examsRouter.post('/', isAdmin, async (req, res) => {
   console.log("post request for new exam")
-  const values = ['', false]
+  const values = [req.body.name, false]
   try {
     const result = await pool.query("INSERT INTO exam (name, published) VALUES ($1,$2) RETURNING exam_id", values)
     res.status(201).send(result.rows[0].exam_id)

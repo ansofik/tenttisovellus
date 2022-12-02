@@ -20,15 +20,17 @@ const getExam = async (id) => {
 }
 
 const addExam = async () => {
-  const response = await axios.post(`${url}/exams`, config)
+  const response = await axios.post(`${url}/exams`, { name: 'Uusi tentti'}, config)
   console.log('response', response);
   return response.data
 }
 
+const deleteExam = (id) => axios.delete(`${url}/exams/${id}/`, config)
+
 const updateExamName = (id, name) => axios.put(`${url}/exams/${id}/`, { name: name }, config)
 
 const addQuestion = async (id) => {
-  const response = await axios.post(`${url}/exams/${id}/questions`, { text: ''}, config)
+  const response = await axios.post(`${url}/exams/${id}/questions`, { text: '' }, config)
   console.log('response', response);
   return response.data
 }
@@ -37,24 +39,33 @@ const deleteQuestion = (id) => axios.delete(`${url}/questions/${id}/`, config)
 
 const updateQuestion = (id, text) => axios.put(`${url}/questions/${id}/`, { questionText: text }, config)
 
-const addOption = async () => {
-  const response = await axios.post(`${url}/questions/options`, config)
+const addOption = async (id) => {
+  const response = await axios.post(`${url}/questions/${id}/options`, { text: '', correct: false }, config)
   console.log('response', response);
   return response.data
 }
 
-const updateOption = (id, text, correct) => axios.put(`${url}/options/${id}/`, { optionText: text, correct: correct }, config)
+const deleteOption = (id) => axios.delete(`${url}/options/${id}/`, config)
+
+const updateOption = (id, text, correct) => {
+  console.log('updating option');
+  console.log('correct', correct)
+  
+  axios.put(`${url}/options/${id}/`, { text: text, correct: correct }, config)
+}
 
 const examService = {
   getExams,
   getExam,
   addExam,
+  deleteExam,
   updateExamName,
-  updateQuestion,
   addQuestion,
   deleteQuestion,
-  updateOption,
-  addOption
+  updateQuestion,
+  addOption,
+  deleteOption,
+  updateOption
 }
 
 export default examService

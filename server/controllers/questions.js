@@ -27,7 +27,10 @@ questionsRouter.delete('/:questionId', async (req, res) => {
     return;
   }
   try {
+    await pool.query('BEGIN')
+    await pool.query('DELETE FROM option o WHERE o.question_id=$1', [questionId])
     const result = await pool.query("DELETE FROM question WHERE question_id=$1", [questionId])
+    await pool.query('COMMIT')
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {
@@ -46,7 +49,7 @@ questionsRouter.post('/:questionId/options', async (req, res) => {
     return;
   }
   const query = {
-    text: 'INSERT INTO option (question_id, text, correct) VALUES ($1,$2,$3) RETURNING option_id',
+    text: 'INSERT INTO option (question_id, option_text, correct) VALUES ($1,$2,$3) RETURNING option_id',
     values: [questionId, req.body.text, req.body.correct],
   }
   console.log(query)
