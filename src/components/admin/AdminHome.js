@@ -1,5 +1,5 @@
 const AdminHome = ({ user }) => {
-    console.log('home',user)
+    console.log('home', user)
     return (
       <div>
         <h1>Etusivu</h1>

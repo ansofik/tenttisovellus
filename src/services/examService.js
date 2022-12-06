@@ -8,6 +8,13 @@ const config = {
 }
 
 const getExams = async () => {
+  console.log('get exam titles from server')
+  const response = await axios.get(`${url}/exams`, config)
+  console.log('response', response);
+  return response.data
+}
+
+const getPublishedExams = async () => {
   const response = await axios.get(`${url}/exams`, config)
   console.log('response', response);
   return response.data
@@ -56,6 +63,7 @@ const updateOption = (id, text, correct) => {
 
 const examService = {
   getExams,
+  getPublishedExams,
   getExam,
   addExam,
   deleteExam,

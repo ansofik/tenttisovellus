@@ -19,13 +19,18 @@ import {
 
 const App = () => {
 
-  const [data, dispatch] = useReducer(reducer, { user: null, initialized: false, selectedExamId: null });
+  const [data, dispatch] = useReducer(reducer, { user: null, initialized: false, selectedExam: null });
 
   // get exam titles from the server
   useEffect(() => {
     const getExamData = async () => {
       try {
-        const exams = await examService.getExams()
+        let exams;
+        if (data.user.admin) {
+          exams = await examService.getExams()
+        } else {
+          exams = await examService.getPublishedExams()
+        }
         dispatch({ type: 'INIT_DATA', payload: exams });
       } catch (error) {
         console.log("Error", error)
@@ -41,35 +46,35 @@ const App = () => {
       <Routes>
         {console.log('rendering.....')}
 
-        <Route path='/' element={data.user ? <Navigate replace to={data.user.admin? '/admin/home' : '/home'} /> : <Login dispatch={dispatch} />} />
+        <Route path='/' element={data.user ? <Navigate replace to={data.user.admin? '/opettaja/etusivu' : '/etusivu'} /> : <Login dispatch={dispatch} />} />
 
-        <Route path='/admin/home' element={
+        <Route path='/opettaja/etusivu' element={
           <Protected user={data.user} admin={true}>
-            <AdminHeader />
+            <AdminHeader dispatch={dispatch}/>
             <AdminHome user={data.user} />
           </Protected>
         } />
 
-        <Route path='/admin/exams' element={
+        <Route path='/opettaja/tentit' element={
           <Protected user={data.user} admin={true}>
             <AdminHeader />
             <Exams exams={data.exams} dispatch={dispatch} />
-            {data.selectedExamId !== null && <EditExam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
+            {data.selectedExam !== null && <EditExam exam={data.selectedExam} dispatch={dispatch} />}
           </Protected>
         } />
 
-        <Route path='/home' element={
+        <Route path='/etusivu' element={
           <Protected user={data.user} admin={false}>
             <Header />
             <Home user={data.user} />
           </Protected>
         } />
 
-        <Route path='/exams' element={
+        <Route path='/tentit' element={
           <Protected user={data.user} admin={false}>
             <Header />
             <Exams exams={data.exams} dispatch={dispatch} />
-            {data.selectedExamId !== null && <Exam exam={data.exams.filter(exam => exam.id === data.selectedExamId)[0]} dispatch={dispatch} />}
+            {data.selectedExam !== null && <Exam exam={data.selectedExam} dispatch={dispatch} />}
           </Protected>
         } />
 
