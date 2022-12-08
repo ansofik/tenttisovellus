@@ -48,12 +48,12 @@ const EditQuestion = ({ question, dispatch }) => {
 
   return (
     <div className='question'>
-      <input className='questionInput' type="text" value={question.questionText} onChange={handleEdit}  />
-      <button className='deleteButton' type="button" onClick={handleDelete}>-</button>
-      <button className='addButton' type="button" onClick={handleAdd} >+</button>
+      <input className='input' type="text" value={question.questionText} onChange={handleEdit}  />
+      <button type="button" onClick={handleDelete}>-</button>
       <div>
         {question.options.map(option => <EditOption option={option} dispatch={dispatch} key={option.optionId} questionId={question.questionId} />)}
       </div>
+      <button type="button" onClick={handleAdd} >+</button>
     </div>
   );
 }

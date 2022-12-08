@@ -4,62 +4,43 @@
     display: flex;
     align-items: left;
     flex-direction: column;
-    /* gap: 10px; */
+    gap: 10px;
+}
+
+.nameContainer {
+    width: 1000px;
+    padding: 20px;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    box-shadow: 2px 2px lightgray;
+    border-radius: 5px;
 }
 
 .nameInput {
     padding: 5px;
     width: 300px;
     background-color: white;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
 }
 
 .question {
     width: 1000px;
     padding: 20px;
-    background-color: white;
+    background-color: whitesmoke;
     border: 1px solid lightgray;
     box-shadow: 2px 2px lightgray;
     border-radius: 5px;
 }
 
-.question {
-    width: 1000px;
-    padding: 20px;
-    background-color: white;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
-}
-
-.questionInput {
+.input {
     padding: 5px;
-    width: 300px;
+    width: 500px;
     background-color: white;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
-}
-
-.optionInput {
-    padding: 5px;
-    width: 300px;
-    background-color: white;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
+    /* border: 1px solid lightgray; */
 }
 
 .addQuestionButton {
-    background-color: white;
-    color:black;
     padding: 5px;
     width: 150px;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
 }
 
 .checkbox {
@@ -67,18 +48,13 @@
     height: 15px;
 }
 
-.addButton {
-    background-color: white;
+.editExam button {
+    background-color: whitesmoke;
     color: black;
     border: 1px solid lightgray;
     box-shadow: 2px 2px lightgray;
     border-radius: 5px;
+    padding: 5px 10px;
+    margin: 3px;
 }
 
-.deleteButton {
-    background-color: white;
-    color: black;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
-}

@@ -33,8 +33,10 @@ const EditExam = ({ exam, dispatch }) => {
 
   return (
     <div className='editExam'>
-      <label htmlFor="name">Tentin nimi: </label>
-      <input className='nameInput' type="text" id="name" value={exam.name} onChange={handleEdit} />
+      <div className='nameContainer'>
+        <label htmlFor="name">Tentin nimi: </label>
+        <input className='nameInput' type="text" id="name" value={exam.name} onChange={handleEdit} />
+      </div>
       <div>
         {exam.questions.map(question => <EditQuestion question={question} dispatch={dispatch} key={question.questionId} />)}
       </div>

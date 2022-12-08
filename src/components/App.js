@@ -45,20 +45,20 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {console.log('rendering.....')}
+        {console.log('rendering....., user:', data.user)}
 
-        <Route path='/' element={data.user ? <Navigate replace to={data.user.admin? '/opettaja/etusivu' : '/etusivu'} /> : <Login dispatch={dispatch} />} />
+        <Route path='/' element={data.user ? <Navigate replace to={data.user.admin ? '/opettaja/etusivu' : '/etusivu'} /> : <Login dispatch={dispatch} />} />
 
         <Route path='/opettaja/etusivu' element={
           <Protected user={data.user} admin={true}>
-            <AdminHeader dispatch={dispatch}/>
+            <AdminHeader dispatch={dispatch} />
             <AdminHome user={data.user} />
           </Protected>
         } />
 
         <Route path='/opettaja/tentit' element={
           <Protected user={data.user} admin={true}>
-            <AdminHeader/>
+            <AdminHeader dispatch={dispatch}/>
             <Exams exams={data.exams} dispatch={dispatch} />
             {data.selectedExam !== null && <EditExam exam={data.selectedExam} dispatch={dispatch} />}
           </Protected>
@@ -66,14 +66,14 @@ const App = () => {
 
         <Route path='/etusivu' element={
           <Protected user={data.user} admin={false}>
-            <Header />
+            <Header dispatch={dispatch}/>
             <Home user={data.user} />
           </Protected>
         } />
 
         <Route path='/tentit' element={
           <Protected user={data.user} admin={false}>
-            <Header />
+            <Header dispatch={dispatch}/>
             <Exams exams={data.exams} dispatch={dispatch} />
             {data.selectedExam !== null && <Exam exam={data.selectedExam} dispatch={dispatch} />}
           </Protected>

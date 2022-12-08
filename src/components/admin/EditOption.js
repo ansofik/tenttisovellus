@@ -56,8 +56,8 @@ const EditOption = ({ option, dispatch, questionId }) => {
   return (
     <div>
       <input className='checkbox' type="checkbox" checked={option.correct} onChange={toggleCorrect} />
-      <input className='optionInput' type="text" value={option.optionText} onChange={handleEdit} />
-      <button className='deleteButton' type="button" onClick={handleDelete}>-</button>
+      <input className='input' type="text" value={option.optionText} onChange={handleEdit} />
+      <button type="button" onClick={handleDelete}>-</button>
     </div>
   );
 }

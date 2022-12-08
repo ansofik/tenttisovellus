@@ -107,6 +107,7 @@ function reducer(state, action) {
       return { ...state, user: action.payload }
 
     case 'LOGOUT':
+      console.log('logging out');
       return { ...state, user: null }
 
     default:

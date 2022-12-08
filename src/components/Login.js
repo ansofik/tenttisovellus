@@ -1,3 +1,4 @@
+import './Login.css'
 import axios from "axios"
 import { useState } from 'react'
 
@@ -25,16 +26,16 @@ const Login = ({ dispatch }) => {
     <div className='login'>
       <h1>Tenttisovellus</h1>
       <div className='signInContainer'>
-        <label className='formLabel' for='loginForm'>Kirjaudu sisään</label>
+        <label className='formLabel' htmlFor='loginForm'>Kirjaudu sisään</label>
         <form id='loginForm' onSubmit={handleLogin}>
           <div className='inputContainer'>
-            <label for='username'>Käyttäjätunnus</label>
+            <label htmlFor='username'>Käyttäjätunnus</label>
             <input id='username' type='text' value={loginData.username} onChange={
               event => setLoginData({ username: event.target.value, password: loginData.password })
             } />
           </div>
           <div>
-          <label for='password'>Salasana</label>
+          <label htmlFor='password'>Salasana</label>
           <input id='password' type='text' value={loginData.password} onChange={
               event => setLoginData({ username: loginData.username, password: event.target.value })
             } />
