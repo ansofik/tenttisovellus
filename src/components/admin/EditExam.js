@@ -1,4 +1,4 @@
-import '../App.css';
+import './EditExam.css';
 import EditQuestion from './EditQuestion';
 import examService from '../../services/examService'
 
@@ -32,13 +32,13 @@ const EditExam = ({ exam, dispatch }) => {
   console.log('editing exam', exam)
 
   return (
-    <div>
+    <div className='editExam'>
       <label htmlFor="name">Tentin nimi: </label>
-      <input type="text" id="name" value={exam.name} onChange={handleEdit} />
+      <input className='nameInput' type="text" id="name" value={exam.name} onChange={handleEdit} />
       <div>
         {exam.questions.map(question => <EditQuestion question={question} dispatch={dispatch} key={question.questionId} />)}
       </div>
-      <button type="button" onClick={handleClick} >lisää kysymys</button>
+      <button className='addQuestionButton' type="button" onClick={handleClick}>Lisää kysymys</button>
     </div>
   );
 }

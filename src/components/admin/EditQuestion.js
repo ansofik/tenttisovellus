@@ -1,6 +1,6 @@
 import EditOption from './EditOption'
 import examService from '../../services/examService'
-
+import './EditExam.css'
 const EditQuestion = ({ question, dispatch }) => {
 
   const handleEdit = async event => {
@@ -47,10 +47,10 @@ const EditQuestion = ({ question, dispatch }) => {
   }
 
   return (
-    <div>
-      <input type="text" value={question.questionText} onChange={handleEdit}  />
-      <button type="button" onClick={handleDelete}>poista</button>
-      <button type="button" onClick={handleAdd} >+</button>
+    <div className='question'>
+      <input className='questionInput' type="text" value={question.questionText} onChange={handleEdit}  />
+      <button className='deleteButton' type="button" onClick={handleDelete}>-</button>
+      <button className='addButton' type="button" onClick={handleAdd} >+</button>
       <div>
         {question.options.map(option => <EditOption option={option} dispatch={dispatch} key={option.optionId} questionId={question.questionId} />)}
       </div>

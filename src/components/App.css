@@ -1,59 +1,5 @@
 
-body {
-  background-color:whitesmoke;
-}
 
-header {
-  background-color: grey;
-  padding:10px;
-}
-
-header nav {
-  width: 98%;
-  /* border: 2px solid black; */
-}
-
-.navbar {
-  list-style: none;
-  display: flex;
-  /* border: 2px solid black; */
-}
-
-/* .navbar li:last-child {
-  margin-left: auto;
-} */
-
-.navbar a {
-  padding:10px;
-  text-transform: uppercase;
-  color: black;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.center {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.center nav {
-  width: 1000px;
-  /* border: 2px solid black; */
-} 
-
-.testMenu {
-  list-style: none;
-  display: flex;
-  /* border: 2px solid black; */
-}
-
-.testMenu li {
-  padding: 10px;
-  text-transform: uppercase;
-  color: royalblue;
-}
 
 .questAns {
   width: 1000px;

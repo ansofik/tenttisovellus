@@ -22,23 +22,26 @@ const Login = ({ dispatch }) => {
   }
 
   return (
-    <div>
+    <div className='login'>
       <h1>Tenttisovellus</h1>
-      <h2>Kirjaudu sisään</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          Käyttäjätunnus
-          <input type='text' value={loginData.username} onChange={
-            event => setLoginData({username: event.target.value, password: loginData.password})
+      <div className='signInContainer'>
+        <label className='formLabel' for='loginForm'>Kirjaudu sisään</label>
+        <form id='loginForm' onSubmit={handleLogin}>
+          <div className='inputContainer'>
+            <label for='username'>Käyttäjätunnus</label>
+            <input id='username' type='text' value={loginData.username} onChange={
+              event => setLoginData({ username: event.target.value, password: loginData.password })
             } />
-        </div>
-        <div>
-          Salasana <input type='text' value={loginData.password} onChange={
-            event => setLoginData({username: loginData.username, password: event.target.value})
-          } />
-        </div>
-        <button type='submit'>Kirjaudu sisään</button>
-      </form>
+          </div>
+          <div>
+          <label for='password'>Salasana</label>
+          <input id='password' type='text' value={loginData.password} onChange={
+              event => setLoginData({ username: loginData.username, password: event.target.value })
+            } />
+          </div>
+          <button type='submit'>Kirjaudu sisään</button>
+        </form>
+      </div>
     </div>
 
   )

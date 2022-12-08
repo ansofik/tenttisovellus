@@ -1,4 +1,4 @@
-import './App.css';
+import '../App.css';
 import Question from './Question';
 
 const Exam = ({ exam, dispatch }) => {

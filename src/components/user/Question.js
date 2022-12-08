@@ -1,4 +1,4 @@
-import './App.css';
+import '../App.css';
 import Option from './Option';
 
 const Question = ({ question, dispatch }) => {

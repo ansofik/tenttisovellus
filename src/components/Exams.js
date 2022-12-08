@@ -1,4 +1,4 @@
-
+import './Exams.css'
 import examService from '../services/examService'
 
 const Exams = ({ exams, dispatch }) => {
@@ -39,18 +39,18 @@ const Exams = ({ exams, dispatch }) => {
   }
 
   return (
-    <div>
+    <div className='exams'>
       <h1>Tentit</h1>
-      <ul className="testMenu">
+      <ul className='testMenu'>
         {exams.map(exam =>
           <li key={exam.id}>
             <button className='examButton' type='button' onClick={() => selectExam(exam.id)}>
               {exam.name}
             </button>
-            <button type='button' onClick={() => deleteExam(exam.id)}>-</button>
+            <button className='deleteButton' type='button' onClick={() => deleteExam(exam.id)}>-</button>
           </li>
         )}
-        <button type='button' onClick={addExam}>+</button>
+        <button className='addExamButton' type='button' onClick={addExam}>Lisää tentti</button>
       </ul>
     </div>
   )

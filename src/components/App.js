@@ -1,9 +1,9 @@
 import './App.css';
 import Login from './Login';
-import Header from './Header';
-import Home from './Home';
+import Header from './user/Header';
+import Home from './user/Home';
 import Exams from './Exams';
-import Exam from './Exam';
+import Exam from './user/Exam';
 import EditExam from './admin/EditExam';
 import AdminHeader from './admin/AdminHeader';
 import AdminHome from './admin/AdminHome';
@@ -23,6 +23,7 @@ const App = () => {
 
   // get exam titles from the server
   useEffect(() => {
+    console.log('useeffect');
     const getExamData = async () => {
       try {
         let exams;
@@ -57,7 +58,7 @@ const App = () => {
 
         <Route path='/opettaja/tentit' element={
           <Protected user={data.user} admin={true}>
-            <AdminHeader />
+            <AdminHeader/>
             <Exams exams={data.exams} dispatch={dispatch} />
             {data.selectedExam !== null && <EditExam exam={data.selectedExam} dispatch={dispatch} />}
           </Protected>
