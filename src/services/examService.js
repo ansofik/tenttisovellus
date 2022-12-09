@@ -15,7 +15,7 @@ const getExams = async () => {
 }
 
 const getPublishedExams = async () => {
-  const response = await axios.get(`${url}/exams`, config)
+  const response = await axios.get(`${url}/userexams`, config)
   console.log('response', response);
   return response.data
 }
@@ -24,6 +24,29 @@ const getExam = async (id) => {
   const response = await axios.get(`${url}/exams/${id}`, config)
   console.log('response', response);
   return response.data
+}
+
+const getUserExam = async (id) => {
+  const response = await axios.get(`${url}/userexams/${id}`, config)
+  console.log('response', response);
+  return response.data
+}
+
+const takeExam = async (examId) => {
+  const response = await axios.post(`${url}/takenexams`, { examId: examId}, config)
+  console.log('response', response);
+  return response.data
+}
+
+const saveSelectedOption = async (takenExamId, optionId) => {
+  const response = await axios.post(`${url}/takenexams/${takenExamId}/answers`, {answerOptionId: optionId}, config)
+  console.log('response', response);
+  return response.data
+}
+
+const returnExam = async (takenExamId) => {
+  console.log('returning exam');
+  const response = await axios.put(`${url}/takenexams/${takenExamId}`, {}, config)
 }
 
 const addExam = async () => {
@@ -65,6 +88,10 @@ const examService = {
   getExams,
   getPublishedExams,
   getExam,
+  getUserExam,
+  takeExam,
+  saveSelectedOption,
+  returnExam,
   addExam,
   deleteExam,
   updateExamName,

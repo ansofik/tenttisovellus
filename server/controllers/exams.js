@@ -47,7 +47,7 @@ examsRouter.get('/:examId', async (req, res) => {
       if (curr.option_id === null) {
         return prev
       }
-      const newOption = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct }
+      const newOption = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct}
       question.options.push(newOption)
       return prev
     }, [])
@@ -60,7 +60,7 @@ examsRouter.get('/:examId', async (req, res) => {
   }
 })
 
-examsRouter.post('/', isAdmin, async (req, res) => {
+examsRouter.post('/', async (req, res) => {
   console.log("post request for new exam")
   const values = [req.body.name, false]
   try {
@@ -72,7 +72,7 @@ examsRouter.post('/', isAdmin, async (req, res) => {
   }
 })
 
-examsRouter.put('/:examId', isAdmin, async (req, res) => {
+examsRouter.put('/:examId', async (req, res) => {
   console.log("put request to update exam")
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
@@ -94,7 +94,7 @@ examsRouter.put('/:examId', isAdmin, async (req, res) => {
   }
 })
 
-examsRouter.delete('/:examId', isAdmin, async (req, res) => {
+examsRouter.delete('/:examId', async (req, res) => {
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
     res.status(400).end()
@@ -118,7 +118,7 @@ examsRouter.delete('/:examId', isAdmin, async (req, res) => {
   }
 })
 
-examsRouter.post('/:examId/questions', isAdmin, async (req, res) => {
+examsRouter.post('/:examId/questions', async (req, res) => {
   console.log('post request for adding a question');
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {

@@ -1,5 +1,5 @@
 import './Exams.css'
-import examService from '../services/examService'
+import examService from '../../services/examService'
 
 const Exams = ({ exams, dispatch }) => {
 

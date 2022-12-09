@@ -55,10 +55,7 @@ takenExamsRouter.get('/:takenExamId', async (req, res) => {
 takenExamsRouter.post('/', async (req, res) => {
   console.log("post for new taken exam")
   console.log(req.body, req.decoded)
-  if (req.body.accountId != req.decoded.userId) {
-    return res.status(403).end()
-  }
-  values = [req.body.examId, req.body.accountId, new Date()]
+  values = [req.body.examId, req.decoded.userId, new Date()]
   try {
     const result = await pool.query("INSERT INTO taken_exam (exam_id, account_id, start_time) VALUES ($1,$2,$3) RETURNING taken_exam_id id", values)
     res.status(201).send(result.rows[0].id)
@@ -85,11 +82,11 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     return
   }
 
-  const values = [req.body.points, new Date(), takenExamId]
+  const points = 0;
+  const values = [points, new Date(), takenExamId]
   try {
-    console.log('here');
 
-    const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3", values)
+    const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3 RETURNING points", values)
     if (result.rowCount > 0) {
       res.status(204).end()
     } else {
@@ -149,6 +146,7 @@ takenExamsRouter.get('/:takenExamId/answers', async (req, res) => {
 })
 
 takenExamsRouter.post('/:takenExamId/answers', async (req, res) => {
+  console.log('post request to save answer option')
   const takenExamId = Number(req.params.takenExamId)
   if (isNaN(takenExamId)) {
     res.status(400).end()

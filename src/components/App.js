@@ -2,11 +2,12 @@ import './App.css';
 import Login from './Login';
 import Header from './user/Header';
 import Home from './user/Home';
-import Exams from './Exams';
+import Exams from './admin/Exams';
 import Exam from './user/Exam';
 import EditExam from './admin/EditExam';
 import AdminHeader from './admin/AdminHeader';
 import AdminHome from './admin/AdminHome';
+import UserExams from './user/UserExams';
 import Protected from './Protected';
 import { useReducer, useEffect } from 'react';
 import examService from '../services/examService';
@@ -74,8 +75,8 @@ const App = () => {
         <Route path='/tentit' element={
           <Protected user={data.user} admin={false}>
             <Header dispatch={dispatch}/>
-            <Exams exams={data.exams} dispatch={dispatch} />
-            {data.selectedExam !== null && <Exam exam={data.selectedExam} dispatch={dispatch} />}
+            <UserExams exams={data.exams} dispatch={dispatch} />
+            {data.selectedExam !== null && <Exam exam={data.selectedExam} takenExamId={data.takenExamId} dispatch={dispatch } />}
           </Protected>
         } />
 

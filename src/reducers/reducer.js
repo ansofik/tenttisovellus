@@ -102,6 +102,28 @@ function reducer(state, action) {
         selectedExam: action.payload
       }
 
+    case 'SELECTED_USER_EXAM':
+      console.log(action.payload)
+      return {
+        ...state,
+        selectedExam: action.payload.exam,
+        takenExamId: action.payload.takenExamId
+      }
+
+    case 'TOGGLE_OPTION':
+      return {
+        ...state,
+        selectedExam: {
+          ...state.selectedExam,
+          questions: state.selectedExam.questions.map(question => question.questionId === action.payload.questionId ? {
+            ...question, options: question.options.map(option => option.optionId === action.payload.optionId ? {
+              ...option, selected: !option.selected
+            } : option)
+          } : question)
+        }
+      }
+
+
     case 'STORE_USER':
       console.log('user', action.payload)
       return { ...state, user: action.payload }
