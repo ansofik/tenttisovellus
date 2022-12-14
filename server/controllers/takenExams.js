@@ -82,6 +82,7 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     return
   }
 
+  console.log('exam', req.body.selectedOptionIds)
   const points = 0;
   const values = [points, new Date(), takenExamId]
   try {
@@ -160,14 +161,16 @@ takenExamsRouter.post('/:takenExamId/answers', async (req, res) => {
     }
   } catch (err) {
     res.status(500).send(err)
+  }
 
-    const values = [takenExamId, req.body.answerOptionId]
-    try {
-      const result = await pool.query('INSERT INTO answer (taken_exam_id, answer_option_id) VALUES ($1,$2) RETURNING answer_id', values)
-      res.status(201).send(result.rows[0].answer_id)
-    } catch (err) {
-      res.status(500).send(err)
-    }
+  try {
+    let result = await pool.query('SELECT correct FROM option WHERE option_id=$1', [req.body.optionId])
+    const correct = result.rows[0].correct
+    const values = [takenExamId, req.body.questionId, req.body.optionId, correct]
+    result = await pool.query('INSERT INTO answer (taken_exam_id, question_id, option_id, correct) VALUES ($1,$2,$3,$4) RETURNING answer_id', values)
+    res.status(201).send(result.rows[0].answer_id)
+  } catch (err) {
+    res.status(500).send(err)
   }
 })
 

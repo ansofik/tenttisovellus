@@ -14,8 +14,8 @@ const Login = ({ dispatch }) => {
         { username: loginData.username, password: loginData.password })
       console.log('response', response)
       const user = response.data.data
-      dispatch({ type: 'STORE_USER', payload: user })
       localStorage.setItem('loggedInUser', JSON.stringify(user))
+      dispatch({ type: 'STORE_USER', payload: user })
     } catch (err) {
       console.log(err);
     }
@@ -24,7 +24,7 @@ const Login = ({ dispatch }) => {
 
   return (
     <div className='login'>
-      <h1>Tenttisovellus</h1>
+      <h1 data-test='app-heading'>Tenttisovellus</h1>
       <div className='signInContainer'>
         <label className='formLabel' htmlFor='loginForm'>Kirjaudu sisään</label>
         <form id='loginForm' onSubmit={handleLogin}>
@@ -40,7 +40,7 @@ const Login = ({ dispatch }) => {
               event => setLoginData({ username: loginData.username, password: event.target.value })
             } />
           </div>
-          <button type='submit'>Kirjaudu sisään</button>
+          <button type='submit' id='loginButton'>Kirjaudu sisään</button>
         </form>
       </div>
     </div>

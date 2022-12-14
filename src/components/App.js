@@ -60,7 +60,7 @@ const App = () => {
         <Route path='/opettaja/tentit' element={
           <Protected user={data.user} admin={true}>
             <AdminHeader dispatch={dispatch}/>
-            <Exams exams={data.exams} dispatch={dispatch} />
+            {data.initialized && <Exams exams={data.exams} dispatch={dispatch} />}
             {data.selectedExam !== null && <EditExam exam={data.selectedExam} dispatch={dispatch} />}
           </Protected>
         } />

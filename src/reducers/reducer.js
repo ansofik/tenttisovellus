@@ -104,10 +104,12 @@ function reducer(state, action) {
 
     case 'SELECTED_USER_EXAM':
       console.log(action.payload)
+      const {exam, takenExamId} = action.payload
+      exam.questions.forEach(question => question.options.forEach(option => option.selected = false))
       return {
         ...state,
         selectedExam: action.payload.exam,
-        takenExamId: action.payload.takenExamId
+        takenExamId: action.payload.takenExamId,
       }
 
     case 'TOGGLE_OPTION':
@@ -120,9 +122,8 @@ function reducer(state, action) {
               ...option, selected: !option.selected
             } : option)
           } : question)
-        }
+        },
       }
-
 
     case 'STORE_USER':
       console.log('user', action.payload)

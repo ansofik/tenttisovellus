@@ -47,13 +47,13 @@ const EditQuestion = ({ question, dispatch }) => {
   }
 
   return (
-    <div className='question'>
+    <div data-cy='question' className='question'>
       <input className='input' type="text" value={question.questionText} onChange={handleEdit}  />
       <button type="button" onClick={handleDelete}>-</button>
       <div>
         {question.options.map(option => <EditOption option={option} dispatch={dispatch} key={option.optionId} questionId={question.questionId} />)}
       </div>
-      <button type="button" onClick={handleAdd} >+</button>
+      <button data-cy='addOptionButton' className='addOptionButton' type="button" onClick={handleAdd} >+</button>
     </div>
   );
 }

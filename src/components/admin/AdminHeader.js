@@ -15,10 +15,10 @@ const AdminHeader = ({ dispatch }) => {
     <header>
       <nav>
         <ul className="navbar">
-          <li><Link to='/opettaja/etusivu'>etusivu</Link></li>
-          <li><Link to='/opettaja/tentit'>tentit</Link></li>
+          <li><Link data-test='homeLink' to='/opettaja/etusivu'>etusivu</Link></li>
+          <li><Link data-test='examsLink' to='/opettaja/tentit'>tentit</Link></li>
           {/* <li><Link to='/opettaja/suoritukset'>Suoritukset</Link></li> */}
-          <li><button type='button' onClick={logout}>Kirjaudu ulos</button></li>
+          <li><button data-test='logoutButton' type='button' onClick={logout}>Kirjaudu ulos</button></li>
         </ul>
       </nav>
     </header>

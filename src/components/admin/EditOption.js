@@ -54,7 +54,7 @@ const EditOption = ({ option, dispatch, questionId }) => {
   }
 
   return (
-    <div>
+    <div data-cy='option' className='option'>
       <input className='checkbox' type="checkbox" checked={option.correct} onChange={toggleCorrect} />
       <input className='input' type="text" value={option.optionText} onChange={handleEdit} />
       <button type="button" onClick={handleDelete}>-</button>

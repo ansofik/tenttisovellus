@@ -26,10 +26,13 @@ app.use('/takenexams', verifyToken, takenExamsRouter)
 app.use('/users', usersRouter)
 app.use('/login', loginRouter)
 
+const testingRouter = require('./controllers/testing')
+app.use('/testing', testingRouter)
+
 /* https.createServer(
   {
-    key: fs.readFileSync('./security/server.key'),
-    cert: fs.readFileSync('./security/server.crt'),
+    key: fs.readFileSync('./security/key.pem'),
+    cert: fs.readFileSync('./security/cert.pem'),
   },
   app
 ).listen(port, () => {

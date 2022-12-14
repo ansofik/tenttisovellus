@@ -95,6 +95,7 @@ examsRouter.put('/:examId', async (req, res) => {
 })
 
 examsRouter.delete('/:examId', async (req, res) => {
+  console.log('delete request for exam')
   const examId = Number(req.params.examId)
   if (isNaN(examId)) {
     res.status(400).end()
@@ -103,8 +104,11 @@ examsRouter.delete('/:examId', async (req, res) => {
   try {
     await pool.query('BEGIN')
     await pool.query('DELETE FROM option o USING question q WHERE o.question_id = q.question_id AND q.exam_id=$1', [examId])
+    console.log('deleted options')
     await pool.query('DELETE FROM question q WHERE q.exam_id=$1', [examId])
+    console.log('deleted questions', examId)
     const result = await pool.query("DELETE FROM exam WHERE exam_id=$1", [examId])
+    console.log('deleted exam')
     await pool.query('COMMIT')
     if (result.rowCount > 0) {
       res.status(204).end()

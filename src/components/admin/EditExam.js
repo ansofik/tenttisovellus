@@ -6,6 +6,7 @@ const EditExam = ({ exam, dispatch }) => {
 
   const handleEdit = async event => {
     const name = event.target.value
+    console.log('handleEdit', name)
     try {
       await examService.updateExamName(exam.id, name)
       dispatch({
@@ -40,7 +41,7 @@ const EditExam = ({ exam, dispatch }) => {
       <div>
         {exam.questions.map(question => <EditQuestion question={question} dispatch={dispatch} key={question.questionId} />)}
       </div>
-      <button className='addQuestionButton' type="button" onClick={handleClick}>Lisää kysymys</button>
+      <button data-cy='addQuestionButton' className='addQuestionButton' type="button" onClick={handleClick}>Lisää kysymys</button>
     </div>
   );
 }

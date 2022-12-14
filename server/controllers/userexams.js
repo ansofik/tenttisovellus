@@ -45,7 +45,7 @@ userExamsRouter.get('/', async (req, res) => {
         if (curr.option_id === null) {
           return prev
         }
-        const newOption = { optionId: curr.option_id, optionText: curr.option_text, selected:false}
+        const newOption = { optionId: curr.option_id, optionText: curr.option_text}
         question.options.push(newOption)
         return prev
       }, [])
