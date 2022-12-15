@@ -106,10 +106,18 @@ function reducer(state, action) {
       console.log(action.payload)
       const {exam, takenExamId} = action.payload
       exam.questions.forEach(question => question.options.forEach(option => option.selected = false))
+      exam.returned = false
       return {
         ...state,
         selectedExam: action.payload.exam,
         takenExamId: action.payload.takenExamId,
+      }
+
+    case 'RETURNED_EXAM':
+      console.log(action.payload.points)
+      return {
+        ...state,
+        selectedExam: {...state.selectedExam, returned: true, points: action.payload.points}
       }
 
     case 'TOGGLE_OPTION':
@@ -131,7 +139,7 @@ function reducer(state, action) {
 
     case 'LOGOUT':
       console.log('logging out');
-      return { ...state, user: null }
+      return { ...state, user: null, selectedExam: null}
 
     default:
       throw new Error();

@@ -77,6 +77,7 @@ const App = () => {
             <Header dispatch={dispatch}/>
             <UserExams exams={data.exams} dispatch={dispatch} />
             {data.selectedExam !== null && <Exam exam={data.selectedExam} takenExamId={data.takenExamId} dispatch={dispatch } />}
+            {data.selectedExam !== null && data.selectedExam.returned === true && <div>Palautettu, pisteet {data.selectedExam.points}</div>}
           </Protected>
         } />
 

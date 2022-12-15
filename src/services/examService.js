@@ -2,7 +2,6 @@ import axios from 'axios'
 
 const url = 'http://localhost:8080'
 
-
 const getConfig = () => {
   return {
     headers: {
@@ -48,9 +47,10 @@ const saveSelectedOption = async (takenExamId, questionId, optionId) => {
   return response.data
 }
 
-const returnExam = async (takenExamId, selectedOptionIds) => {
+const returnExam = async (takenExamId, userOptions) => {
   console.log('returning exam');
-  const response = await axios.put(`${url}/takenexams/${takenExamId}`, { selectedOptionIds: selectedOptionIds }, getConfig())
+  const response = await axios.put(`${url}/takenexams/${takenExamId}`, { userOptions: userOptions }, getConfig())
+  return response.data
 }
 
 const addExam = async () => {

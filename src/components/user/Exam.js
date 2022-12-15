@@ -7,11 +7,22 @@ const Exam = ({ exam, takenExamId, dispatch }) => {
   const handleClick = async () => {
     console.log('handleClick')
     try {
-      const selectedOptionIds = exam.questions.reduce((prev, curr) => {
-        return prev.concat(curr.options.filter(option => option.selected === true).map(option => option.optionId))
-      }, [])
-      console.log('selectedOptionIds', selectedOptionIds)
-      await examService.returnExam(takenExamId, selectedOptionIds)
+      // save users answers to object where keys are question ids and values are
+      // objects where keys are option ids and values are selected values (true/false)
+      const userOptions = exam.questions.reduce((prev, curr) => {
+        console.log(prev)
+        prev[curr.questionId] = curr.options.reduce((prev, curr) => {
+          prev[curr.optionId] = curr.selected
+          return prev}, {})
+        return prev}, {})
+      console.log('userOptions', userOptions)
+      const points = await examService.returnExam(takenExamId, userOptions)
+      console.log('points', points)
+      dispatch({
+        type: 'RETURNED_EXAM',
+        payload: {
+          points: points
+        }})
     } catch (err) {
       console.log(err)
     }

@@ -82,14 +82,15 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     return
   }
 
-  console.log('exam', req.body.selectedOptionIds)
+  console.log('exam', req.body.userOptions)
   const points = 0;
   const values = [points, new Date(), takenExamId]
   try {
 
     const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3 RETURNING points", values)
     if (result.rowCount > 0) {
-      res.status(204).end()
+      console.log('points', result.rows[0].points);
+      res.status(200).send((result.rows[0].points).toString())
     } else {
       res.status(404).end()
     }
