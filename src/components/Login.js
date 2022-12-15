@@ -1,6 +1,7 @@
 import './Login.css'
 import axios from "axios"
 import { useState } from 'react'
+import userService from '../services/userService'
 
 const Login = ({ dispatch }) => {
 
@@ -10,10 +11,7 @@ const Login = ({ dispatch }) => {
     event.preventDefault()
     console.log('logging in', loginData.username, loginData.password)
     try {
-      const response = await axios.post('http://localhost:8080/login',
-        { username: loginData.username, password: loginData.password })
-      console.log('response', response)
-      const user = response.data.data
+      const user = await userService.loginUser(loginData)
       localStorage.setItem('loggedInUser', JSON.stringify(user))
       dispatch({ type: 'STORE_USER', payload: user })
     } catch (err) {
