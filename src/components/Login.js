@@ -1,7 +1,9 @@
 import './Login.css'
-import axios from "axios"
 import { useState } from 'react'
 import userService from '../services/userService'
+import {
+  Link
+} from 'react-router-dom'
 
 const Login = ({ dispatch }) => {
 
@@ -34,11 +36,12 @@ const Login = ({ dispatch }) => {
           </div>
           <div>
           <label htmlFor='password'>Salasana</label>
-          <input id='password' type='text' value={loginData.password} onChange={
+          <input id='password' type='text'/* 'password' */ value={loginData.password} onChange={
               event => setLoginData({ username: loginData.username, password: event.target.value })
             } />
           </div>
           <button type='submit' id='loginButton'>Kirjaudu sisään</button>
+          <Link to='/luo-tunnus'>Rekisteröidy</Link>
         </form>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import './App.css';
 import Login from './Login';
+import Register from './Register';
 import Header from './user/Header';
 import Home from './user/Home';
 import Exams from './admin/Exams';
@@ -48,7 +49,11 @@ const App = () => {
       <Routes>
         {console.log('rendering....., user:', data.user)}
 
-        <Route path='/' element={data.user ? <Navigate replace to={data.user.admin ? '/opettaja/etusivu' : '/etusivu'} /> : <Login dispatch={dispatch} />} />
+        <Route path='/' element={data.user ?
+         <Navigate replace to={data.user.admin ?'/opettaja/etusivu' : '/etusivu'} /> : <Login dispatch={dispatch} />} />
+
+        <Route path='/luo-tunnus' element = {data.user ?
+         <Navigate replace to={data.user.admin ? '/opettaja/etusivu' : '/etusivu'}/> : <Register dispatch={dispatch} /> }/>
 
         <Route path='/opettaja/etusivu' element={
           <Protected user={data.user} admin={true}>

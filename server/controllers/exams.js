@@ -25,7 +25,7 @@ examsRouter.get('/:examId', async (req, res) => {
   }
 
   const query = {
-    text: 'SELECT e.exam_id, e.name, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e LEFT JOIN question q ON e.exam_id = q.exam_id LEFT JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1',
+    text: 'SELECT e.exam_id, e.name, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e LEFT JOIN question q ON e.exam_id = q.exam_id LEFT JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1 ORDER BY o.option_id',
     values: [examId]
   }
   try {

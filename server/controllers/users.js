@@ -35,7 +35,8 @@ usersRouter.post('/', async (req, res, next) => {
     data: {
       userId: userId,
       username: username,
-      token: token
+      token: token,
+      admin: false
     }
   })
 })
