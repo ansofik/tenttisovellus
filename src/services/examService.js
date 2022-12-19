@@ -47,9 +47,9 @@ const saveSelectedOption = async (takenExamId, questionId, optionId) => {
   return response.data
 }
 
-const returnExam = async (takenExamId, userOptions) => {
+const returnExam = async (takenExamId, answers) => {
   console.log('returning exam');
-  const response = await axios.put(`${url}/takenexams/${takenExamId}`, { userOptions: userOptions }, getConfig())
+  const response = await axios.put(`${url}/takenexams/${takenExamId}`, { answers: answers }, getConfig())
   return response.data
 }
 

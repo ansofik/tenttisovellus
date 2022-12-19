@@ -16,12 +16,13 @@ const Exam = ({ exam, takenExamId, dispatch }) => {
           return prev}, {})
         return prev}, {})
       console.log('userOptions', userOptions)
-      const points = await examService.returnExam(takenExamId, userOptions)
+      const {points, maxpoints} = await examService.returnExam(takenExamId, userOptions)
       console.log('points', points)
       dispatch({
         type: 'RETURNED_EXAM',
         payload: {
-          points: points
+          points: points,
+          maxpoints: maxpoints
         }})
     } catch (err) {
       console.log(err)
@@ -35,7 +36,8 @@ const Exam = ({ exam, takenExamId, dispatch }) => {
       <div>
         {exam.questions.map(question => <Question key={question.questionId} question={question} dispatch={dispatch} />)}
       </div>
-      <button onClick={handleClick}>Palauta tentti</button>
+      {exam.returned === true ?
+       <div className='pointsContainer'>Palautettu, vastasit oikein {exam.points}/{exam.maxpoints} kysymykseen</div> : <button onClick={handleClick}>Palauta tentti</button>}
     </div>
   );
 }

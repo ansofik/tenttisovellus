@@ -43,6 +43,13 @@ const App = () => {
       getExamData()
     }
   }, [data.user]);
+  
+  useEffect(() => {
+    const loggedInUser= localStorage.getItem('loggedInUser')
+    if (loggedInUser) {
+      dispatch({ type: 'STORE_USER', payload: JSON.parse(loggedInUser) })
+    }
+  }, [])
 
   return (
     <Router>
@@ -82,7 +89,6 @@ const App = () => {
             <Header dispatch={dispatch}/>
             <UserExams exams={data.exams} dispatch={dispatch} />
             {data.selectedExam !== null && <Exam exam={data.selectedExam} takenExamId={data.takenExamId} dispatch={dispatch } />}
-            {data.selectedExam !== null && data.selectedExam.returned === true && <div>Palautettu, pisteet {data.selectedExam.points}</div>}
           </Protected>
         } />
 

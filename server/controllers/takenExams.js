@@ -82,15 +82,51 @@ takenExamsRouter.put('/:takenExamId', async (req, res) => {
     return
   }
 
-  console.log('exam', req.body.userOptions)
-  const points = 0;
-  const values = [points, new Date(), takenExamId]
-  try {
+  console.log('exam', req.body.answers)
+  const answers = req.body.answers
 
-    const result = await pool.query("UPDATE taken_exam SET points=$1, return_time=$2 WHERE taken_exam_id=$3 RETURNING points", values)
+  let points = 0;
+
+  // maxPoints equals number of questions
+  let maxPoints = 0;
+  
+  for (const questionId in answers) {
+    maxPoints++;
+    const answersOfQuestion = answers[questionId]
+    let options;
+    try {
+      const result = await pool.query('SELECT option_id, correct FROM option WHERE question_id=$1', [questionId])
+      options = result.rows
+    } catch (err) {
+      res.status(500).end()
+      return
+    }
+
+    let addPoint = true
+    options.forEach(async option =>  {
+      const selected = answersOfQuestion[option.option_id]
+      const answerCorrect = selected === option.correct
+      if (!answerCorrect) {
+        addPoint = false
+      }
+      const values = [takenExamId, option.option_id, answerCorrect, selected ]
+      try {
+        await pool.query('INSERT INTO answer (taken_exam_id, option_id, correct, selected) VALUES ($1,$2,$3,$4)', values)
+      } catch (err) {
+        res.status(500).end()
+        return
+      }
+    })
+    if (addPoint === true) points++
+  }
+
+  const values = [points, maxPoints, new Date(), takenExamId]
+
+  try {
+    const result = await pool.query("UPDATE taken_exam SET points=$1, max_points=$2, return_time=$3 WHERE taken_exam_id=$4 RETURNING points, max_points maxpoints", values)
     if (result.rowCount > 0) {
-      console.log('points', result.rows[0].points);
-      res.status(200).send((result.rows[0].points).toString())
+      console.log(result.rows)
+      res.status(200).send((result.rows[0]))
     } else {
       res.status(404).end()
     }

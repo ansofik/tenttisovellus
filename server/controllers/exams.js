@@ -62,7 +62,7 @@ examsRouter.get('/:examId', async (req, res) => {
 
 examsRouter.post('/', async (req, res) => {
   console.log("post request for new exam")
-  const values = [req.body.name, false]
+  const values = [req.body.name, true]
   try {
     const result = await pool.query("INSERT INTO exam (name, published) VALUES ($1,$2) RETURNING exam_id", values)
     res.status(201).send(result.rows[0].exam_id)

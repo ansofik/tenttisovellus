@@ -21,10 +21,11 @@ const Exams = ({ exams, dispatch }) => {
   return (
     <div className='exams'>
       <h1>Tentit</h1>
+      <p>Tentin klikkaaminen aloittaa tenttisuorituksen.</p>
       <ul className='testMenu'>
         {exams.map(exam =>
           <li key={exam.id}>
-            <button type='button' onClick={() => selectExam(exam.id)}>
+            <button className='examButton' type='button' onClick={() => selectExam(exam.id)}>
               {exam.name}
             </button>
           </li>

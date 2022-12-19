@@ -30,3 +30,9 @@
     margin: 3px;
     width: 150px;
 }
+
+.pointsContainer {
+    background-color: lightgreen;
+    padding: 10px;
+    width: 1000px;
+}

@@ -109,15 +109,14 @@ function reducer(state, action) {
       exam.returned = false
       return {
         ...state,
-        selectedExam: action.payload.exam,
-        takenExamId: action.payload.takenExamId,
+        selectedExam: exam,
+        takenExamId: takenExamId,
       }
 
     case 'RETURNED_EXAM':
-      console.log(action.payload.points)
       return {
         ...state,
-        selectedExam: {...state.selectedExam, returned: true, points: action.payload.points}
+        selectedExam: {...state.selectedExam, returned: true, points: action.payload.points, maxpoints: action.payload.maxpoints}
       }
 
     case 'TOGGLE_OPTION':

@@ -35,13 +35,15 @@ const Login = ({ dispatch }) => {
             } />
           </div>
           <div>
-          <label htmlFor='password'>Salasana</label>
-          <input id='password' type='text'/* 'password' */ value={loginData.password} onChange={
+            <label htmlFor='password'>Salasana</label>
+            <input id='password' type=/* 'text' */'password' value={loginData.password} onChange={
               event => setLoginData({ username: loginData.username, password: event.target.value })
             } />
           </div>
           <button type='submit' id='loginButton'>Kirjaudu sisään</button>
-          <Link to='/luo-tunnus'>Rekisteröidy</Link>
+          <div>
+            <Link to='/luo-tunnus'>Rekisteröidy</Link>
+          </div>
         </form>
       </div>
     </div>

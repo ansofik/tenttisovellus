@@ -25,18 +25,7 @@ const Exams = ({ exams, dispatch }) => {
     }
   }
 
-  const deleteExam = async (id) => {
-    console.log('deleting exam with id', id)
-    try {
-      await examService.deleteExam(id)
-      dispatch({
-        type: 'DELETE_EXAM',
-        payload: id
-      })
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  
 
   return (
     <div className='exams'>
@@ -47,10 +36,9 @@ const Exams = ({ exams, dispatch }) => {
             <button data-cy='examButton' className='examButton' type='button' onClick={() => selectExam(exam.id)}>
               {exam.name}
             </button>
-            <button data-cy='deleteExamButton' className='deleteButton' type='button' onClick={() => deleteExam(exam.id)}>-</button>
           </li>
         )}
-        <button data-cy='addExamButton' className='addExamButton' type='button' onClick={addExam}>Lisää tentti</button>
+        <button data-cy='addExamButton' className='examButton' id='addExamButton' type='button' onClick={addExam}>Lisää tentti</button>
       </ul>
     </div>
   )

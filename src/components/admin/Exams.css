@@ -12,27 +12,19 @@
     display: flex;
 }
 
-.testMenu button {
-    background-color: whitesmoke;
-    color: black;
-    border: 1px solid lightgray;
-    box-shadow: 2px 2px lightgray;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin: 3px;
-}
-
-.testMenu li {
-    padding: 10px;
-}
-
 .examButton {
     background-color: whitesmoke;
-    padding: 10px;
+    padding: 10px 15px;
     color: black;
     margin: 10px;
     border: 1px solid lightgray;
     box-shadow: 2px 2px lightgray;
     border-radius: 5px;
+    font-size: medium;
+}
 
+#addExamButton {
+    background-color:lightgreen;
+    border: 1px solid limegreen;
+    box-shadow: 2px 2px limegreen;
 }
