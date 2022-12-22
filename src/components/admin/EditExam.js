@@ -18,6 +18,7 @@ const EditExam = ({ exam, dispatch }) => {
         }
       })
     } catch (err) {
+      alert(`${err}\nLataa tentti uudestaan klikkaamalla sitä valikosta`)
       console.log(err)
     }
   }
