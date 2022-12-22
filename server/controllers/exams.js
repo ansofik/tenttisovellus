@@ -25,7 +25,7 @@ examsRouter.get('/:examId', async (req, res) => {
   }
 
   const query = {
-    text: 'SELECT e.exam_id, e.name, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e LEFT JOIN question q ON e.exam_id = q.exam_id LEFT JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1 ORDER BY o.option_id',
+    text: 'SELECT e.exam_id, e.name, e.xmin, q.question_id, q.question_text, o.option_id, o.option_text, o.correct FROM exam e LEFT JOIN question q ON e.exam_id = q.exam_id LEFT JOIN option o ON q.question_id = o.question_id WHERE e.exam_id=$1 ORDER BY q.question_id, o.option_id',
     values: [examId]
   }
   try {
@@ -41,18 +41,20 @@ examsRouter.get('/:examId', async (req, res) => {
       }
       let question = prev.find(q => q.questionId === curr.question_id)
       if (!question) {
-        question = { questionId: curr.question_id, questionText: curr.question_text, options: []}
+        question = { questionId: curr.question_id, questionText: curr.question_text, options: [] }
         prev.push(question)
       }
       if (curr.option_id === null) {
         return prev
       }
-      const newOption = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct}
+      const newOption = { optionId: curr.option_id, optionText: curr.option_text, correct: curr.correct }
       question.options.push(newOption)
       return prev
     }, [])
 
-    const dataObj = { id: result.rows[0].exam_id, name: result.rows[0].name, questions: questionList }
+    const firstRow = result.rows[0]
+    const dataObj = { id: firstRow.exam_id, name: firstRow.name, questions: questionList }
+    res.set('etag', firstRow.xmin)
     res.json(dataObj)
   } catch (err) {
     console.log(err);
@@ -79,18 +81,29 @@ examsRouter.put('/:examId', async (req, res) => {
     res.status(400).end()
     return;
   }
-  const values = [req.body.name, examId]
+
   try {
-    const result = await pool.query("UPDATE exam SET name=$1 WHERE exam_id=$2", values)
-    if (result.rowCount > 0) {
-      res.status(204).end()
-    } else {
+    const result = await pool.query("SELECT exam_id FROM exam WHERE exam_id=$1", [examId])
+    if (result.rowCount === 0) {
       console.log('no exam matches given id')
       res.status(404).end()
     }
   } catch (err) {
     console.log(err);
     res.status(500).send(err)
+  }
+
+  const version = req.headers['if-match']
+  console.log(version, 'version');
+
+  const values = [req.body.name, examId, version]
+  try {
+    const result = await pool.query("UPDATE exam SET name=$1 WHERE exam_id=$2 AND xmin=$3 RETURNING xmin", values)
+    res.set('etag', result.rows[0].xmin)
+    res.status(204).end()
+  } catch (err) {
+    console.log(err);
+    res.status(412).send(err)
   }
 })
 

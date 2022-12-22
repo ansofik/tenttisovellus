@@ -5,8 +5,12 @@ const Exams = ({ exams, dispatch }) => {
 
   const selectExam = async (id) => {
     try {
-      const exam = await examService.getExam(id)
-      dispatch({ type: 'SELECTED_EXAM', payload: exam })
+      const {exam, version} = await examService.getExam(id)
+      console.log(exam, version)
+      dispatch({ type: 'SELECTED_EXAM', payload: {
+        exam: exam,
+        version: version }
+      })
     } catch (err) {
       console.log("could not get exam questions and options", err)
     }

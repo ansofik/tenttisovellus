@@ -44,10 +44,13 @@ const App = () => {
     }
   }, [data.user]);
   
+
   useEffect(() => {
     const loggedInUser= localStorage.getItem('loggedInUser')
     if (loggedInUser) {
-      dispatch({ type: 'STORE_USER', payload: JSON.parse(loggedInUser) })
+      const user = JSON.parse(loggedInUser) 
+      dispatch({ type: 'STORE_USER', payload: user })
+      examService.setToken(user.token)
     }
   }, [])
 

@@ -1,11 +1,17 @@
 import axios from 'axios'
-
 const url = 'http://localhost:8080'
+
+let token = null
+
+const setToken = newToken => {
+  token = `bearer ${newToken}`
+}
+
 
 const getConfig = () => {
   return {
     headers: {
-      Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedInUser')).token}`
+      'Authorization': token
     }
   }
 }
@@ -26,7 +32,7 @@ const getPublishedExams = async () => {
 const getExam = async (id) => {
   const response = await axios.get(`${url}/exams/${id}`, getConfig())
   console.log('response', response);
-  return response.data
+  return {exam: response.data, version: response.headers.etag}
 }
 
 const getUserExam = async (id) => {
@@ -61,7 +67,18 @@ const addExam = async () => {
 
 const deleteExam = (id) => axios.delete(`${url}/exams/${id}/`, getConfig())
 
-const updateExamName = (id, name) => axios.put(`${url}/exams/${id}/`, { name: name }, getConfig())
+const updateExamName = async (id, name, version) => {
+  console.log('updating examname')
+  const config = {
+    headers: {
+      'Authorization': token,
+      'If-Match': version
+    }
+  }
+  const response = await axios.put(`${url}/exams/${id}/`, { name: name }, config)
+  console.log('response', response);
+  return response.headers.etag
+}
 
 const addQuestion = async (id) => {
   const response = await axios.post(`${url}/exams/${id}/questions`, { text: '' }, getConfig())
@@ -104,7 +121,8 @@ const examService = {
   updateQuestion,
   addOption,
   deleteOption,
-  updateOption
+  updateOption,
+  setToken
 }
 
 export default examService

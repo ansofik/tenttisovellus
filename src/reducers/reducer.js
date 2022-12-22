@@ -16,11 +16,11 @@ function reducer(state, action) {
       };
 
     case 'EXAM_NAME_CHANGED':
-      console.log("changing exam name to", action.payload)
+      const {name, version} = action.payload
       return {
         ...state,
-        exams: state.exams.map(exam => exam.id === state.selectedExam.id ? { ...exam, name: action.payload } : exam),
-        selectedExam: { ...state.selectedExam, name: action.payload }
+        exams: state.exams.map(exam => exam.id === state.selectedExam.id ? { ...exam, name: name} : exam),
+        selectedExam: { ...state.selectedExam, name: name, version: version }
       };
 
     case 'QUESTION_CHANGED':
@@ -95,12 +95,15 @@ function reducer(state, action) {
 
       return { ...state, exams: action.payload, initialized: true, save: false };
 
-    case 'SELECTED_EXAM':
-      console.log('select exam', action.payload);
+    case 'SELECTED_EXAM': {
+      const {exam, version} = action.payload
+      console.log('select exam', exam);
+      exam.version = version
       return {
         ...state,
-        selectedExam: action.payload
+        selectedExam: exam
       }
+    }
 
     case 'SELECTED_USER_EXAM':
       console.log(action.payload)

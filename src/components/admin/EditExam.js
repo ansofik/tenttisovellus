@@ -8,10 +8,14 @@ const EditExam = ({ exam, dispatch }) => {
     const name = event.target.value
     console.log('handleEdit', name)
     try {
-      await examService.updateExamName(exam.id, name)
+      const version = await examService.updateExamName(exam.id, name, exam.version)
+      console.log('version',version)
       dispatch({
         type: 'EXAM_NAME_CHANGED',
-        payload: name
+        payload: {
+          name: name,
+          version: version
+        }
       })
     } catch (err) {
       console.log(err)
@@ -47,7 +51,7 @@ const EditExam = ({ exam, dispatch }) => {
 
   return (
     <div className='editExam'>
-      
+
       <div className='nameContainer'>
         <label htmlFor="name">Tentin nimi: </label>
         <input className='nameInput' type="text" id="name" value={exam.name} onChange={handleEdit} />

@@ -1,6 +1,7 @@
 import './Login.css'
 import { useState } from 'react'
 import userService from '../services/userService'
+import examService from '../services/examService'
 import {
   Link
 } from 'react-router-dom'
@@ -14,6 +15,8 @@ const Login = ({ dispatch }) => {
     console.log('logging in', loginData.username, loginData.password)
     try {
       const user = await userService.loginUser(loginData)
+      console.log('loginUser', user)
+      examService.setToken(user.token)
       localStorage.setItem('loggedInUser', JSON.stringify(user))
       dispatch({ type: 'STORE_USER', payload: user })
     } catch (err) {
@@ -36,7 +39,7 @@ const Login = ({ dispatch }) => {
           </div>
           <div>
             <label htmlFor='password'>Salasana</label>
-            <input id='password' type=/* 'text' */'password' value={loginData.password} onChange={
+            <input id='password' type='text'/* 'password' */ value={loginData.password} onChange={
               event => setLoginData({ username: loginData.username, password: event.target.value })
             } />
           </div>
