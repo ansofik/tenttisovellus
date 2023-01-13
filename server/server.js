@@ -1,8 +1,10 @@
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
-const app = express()
-const port = 8080
+const ws = require('ws');
+const jwt = require("jsonwebtoken");
+const app = express();
+const pgFunc = require('./pg_notify');
 
 const cors = require('cors');
 const corsOptions = {
@@ -32,19 +34,48 @@ app.use('/takenexams', verifyToken, takenExamsRouter)
 app.use('/users', usersRouter)
 app.use('/login', loginRouter)
 
-const testingRouter = require('./controllers/testing')
+const testingRouter = require('./controllers/testing');
 app.use('/testing', testingRouter)
 
-/* https.createServer(
+const server = https.createServer(
   {
     key: fs.readFileSync('./security/key.pem'),
     cert: fs.readFileSync('./security/cert.pem'),
   },
   app
-).listen(port, () => {
-  console.log(`Server running on port ${port}`)
-}) */
+)
 
-app.listen(port, () => {
+const wss = new ws.Server({ server });
+pgFunc.connect()
+const clients = [];
+
+wss.on('connection', ws => {
+  console.log('connected');
+  clients.push(ws);
+  ws.authenticated = false;
+  
+  ws.on('message', message => {
+    const msg = JSON.parse(message);
+    console.log('message', msg);
+    switch (msg.type) {
+      case "authenticate":
+        const decodedToken = jwt.verify(msg.token, 'secretkeyappearshere');
+        if (decodedToken) {
+          ws.authenticated = true;
+          pgFunc.updateClients(clients.filter(c => c.authenticated === true))
+        } else {
+          ws.destroy();
+        }
+    }
+  })
+
+  ws.on('close', () => {
+    clients.splice(clients.indexOf(ws), 1);
+  });
+})
+
+const port = 8080;
+server.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
+

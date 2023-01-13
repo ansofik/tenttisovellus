@@ -2,9 +2,7 @@ import './Login.css'
 import { useState } from 'react'
 import userService from '../services/userService'
 import examService from '../services/examService'
-import {
-  Link
-} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Login = ({ dispatch }) => {
 
@@ -19,6 +17,7 @@ const Login = ({ dispatch }) => {
       examService.setToken(user.token)
       localStorage.setItem('loggedInUser', JSON.stringify(user))
       dispatch({ type: 'STORE_USER', payload: user })
+      dispatch({type: 'WEBSOCKET_CONNECT', payload: true})
     } catch (err) {
       console.log(err);
     }

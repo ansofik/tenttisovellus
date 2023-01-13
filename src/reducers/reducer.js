@@ -143,9 +143,12 @@ function reducer(state, action) {
       console.log('logging out');
       return { ...state, user: null, selectedExam: null}
 
+    case 'WEBSOCKET_CONNECT':
+      return {...state, websocket: action.payload}
+
     default:
       throw new Error();
   }
 }
 
-export default reducer
+export default reducer;

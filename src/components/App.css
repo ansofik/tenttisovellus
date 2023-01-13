@@ -1,6 +1,3 @@
-
-
-
 .questAns {
   width: 1000px;
   padding: 50px;
@@ -23,6 +20,11 @@
   border-radius: 5px;
   text-decoration: none;
   text-align: center;
+}
+
+.notification {
+  color: red;
+  padding: 20px;
 }
 
 
